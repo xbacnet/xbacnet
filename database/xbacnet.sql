@@ -451,6 +451,6 @@ USE `xbacnet`;
 INSERT INTO `xbacnet`.`tbl_versions`
 (`id`, `version`, `release_date`)
 VALUES
-(1, '1.0.0', '2020-09-28');
+(1, '1.0.0', '2024-12-08');
 
 COMMIT;
