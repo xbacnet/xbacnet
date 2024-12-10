@@ -1,4 +1,4 @@
-# XBACnet Server Service
+# xBACnet Server Service
 
 ## Introduction
 This application is a BACnet server that supports many core services that
@@ -45,23 +45,28 @@ $ sudo ufw allow 47808
 
 * Configure xbacnet-server
 ```
-$ cd ~/xbacnet-server
--- Open config file for local device address 
--- change address: lo to the actual interface name by running 'ip a'
--- change objectIdentifier: 600133 to an unique number
+sudo cp ~/xbacnet/xbacnet-server /xbacnet-server
+cd /xbacnet-server
+```
+Open config file for local device address 
+change address: lo to the actual interface name by running 'ip a'
+change objectIdentifier: 600133 to an unique number
+```
 $ sudo nano config.ini
--- Edit settings file for database configuration
-$ sudo nano settings.py
+```
+Edit settings file for database configuration
+```
+sudo nano settings.py
 ```
 
 ### Demo config.ini
 ```
 [BACpypes]
-objectName: XBACnet Server
+objectName: xBACnet Server
 address: 192.168.20.193/24
 objectIdentifier: 20193
-description: XBACnet Server
-vendorName: XBACnet Inc.
+description: xBACnet Server
+vendorName: xBACnet Inc.
 maxApduLengthAccepted: 1024
 segmentationSupported: segmentedBoth
 vendorIdentifier: 15
