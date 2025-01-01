@@ -5,65 +5,58 @@
 
 xBACnet把任何数据发布为BACnet!
 
+此应用是一个BACnet服务器软件，用于在BACnet网络中把各种数据数据发布为多种核心服务。
+支持的服务有Who-Is、I-Am用于设备绑定，读写属性，读写多属性和值变化订阅。
+
 This application is a BACnet server that supports many core services that
 applications need to present data on a BACnet network.  It supports Who-Is
 and I-Am for device binding, Read and Write Property, Read and Write
 Property Multiple, and COV subscriptions.
 
 
-## Prerequisites
-bacpypes
-mysql.connector
+## 前提 Prerequisites 
+MySQL数据库 MySQL Server
+Python (3.4 3.5 3.6 3.7 3.8 3.9 3.10)
 
 
-## Installation
+## 安装 Installation
 
-* Download and install MySQL Connector 
-refer to xbacnet-doc
-
-* Download bacpypes online
+* 克隆源代码 Clone Source Code
 ```
-$ cd ~/tools
-$ git clone https://github.com/pypa/setuptools_scm.git
-$ git clone https://github.com/pytest-dev/pytest-runner.git
-$ git clone https://github.com/al45tair/netifaces.git
-$ git clone https://github.com/JoelBender/bacpypes.git
+git clone https://gitee.com/xbacnet/xbacnet
 ```
-
-* Install bacpypes
+* 创建数据库 Create Database 
 ```
-$ cd ~/tools/setuptools_scm/
-$ sudo python3 setup.py install
-$ cd ~/tools/pytest-runner/
-$ sudo python3 setup.py install
-$ cd ~/tools/netifaces/
-$ sudo python3 setup.py install
-$ cd ~/tools/bacpypes
-$ sudo python3 setup.py install
+mysql -u root -p < xbacnet/database/xbacnet.sql
+```
+* 安装依赖库 Install Requirements
+```
+sudo cp ~/xbacnet/xbacnet-server /xbacnet-server
+cd /xbacnet-server
+sudo pip install -r requirements.txt
 ```
 
-* Allow port in firewall
+* 配置xbacnet-server Configure xbacnet-server
+
+打开配置文件 Open config file for local device address 
+修改地址 Modify address: lo to the actual interface name by running 'ip a'
+修改对象ID Modify objectIdentifier
+```
+$ sudo nano /xbacnet-server/config.ini
+```
+
+编辑数据库设置文件 Edit settings file for database configuration
+```
+sudo nano /xbacnet-server/settings.py
+```
+
+* 打开防火墙端口 Allow port in firewall
 ```
 $ sudo ufw allow 47808
 ```
 
-* Configure xbacnet-server
-```
-sudo cp ~/xbacnet/xbacnet-server /xbacnet-server
-cd /xbacnet-server
-```
-Open config file for local device address 
-change address: lo to the actual interface name by running 'ip a'
-change objectIdentifier: 600133 to an unique number
-```
-$ sudo nano config.ini
-```
-Edit settings file for database configuration
-```
-sudo nano settings.py
-```
 
-### Demo config.ini
+### 示例config.ini  Demo config.ini
 ```
 [BACpypes]
 objectName: xBACnet Server
@@ -80,23 +73,33 @@ systemStatus: operational
 ```
 
 
-* Debugging
+* 调试 Debugging
 ```
 $ sudo python3 server.py --debug --ini config.ini
 -- Use --help for help
 $ sudo python3 server.py --help
 ```
 
-* Deploy xbacnet-server
+* 部署xbacnet-server Deploy xbacnet-server
 ```
-$ sudo cp -r ~/xbacnet/xbacnet-server /xbacnet-server
-$ sudo cp /xbacnet-server/xbacnet-server.service /lib/systemd/system/
-$ sudo systemctl enable xbacnet-server.service
-$ sudo systemctl start xbacnet-server.service
+sudo cp /xbacnet-server/xbacnet-server.service /lib/systemd/system/
 ```
 
-* TODO
-1. add logger
-2. auto reload object_list
-3. add try...except to pro_application.add_object(pro_object)
-  
+```
+sudo systemctl enable xbacnet-server.service
+```
+
+```
+sudo systemctl start xbacnet-server.service
+```
+
+* 如何使用 How to Use
+在数据库中的添加对象，编辑对象属性，把要发布的数据写入present_value
+Add objects in the database, edit object properties, and write the data to be published into the presenter value
+
+* 开发计划 TODO
+1. 增加日志 add logger
+2. 自动重加载对象列表 auto reload object_list
+3. 增加异常处理 add try...except to pro_application.add_object(pro_object)
+4. 增加API Add REST API
+5. 增加Web界面 Add Web UI
