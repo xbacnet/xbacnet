@@ -92,12 +92,16 @@ sudo systemctl enable xbacnet-server.service
 sudo systemctl start xbacnet-server.service
 ```
 
-* How to Use
+## How to Use
 Add objects in the database, edit object properties, and write the data to be published into the presenter value
 
-* TODO
+## TODO
 1. Add logger
 2. Add auto reload object_list
 3. Add try...except to pro_application.add_object(pro_object)
 4. API Add REST API
 5. Add Web UI
+
+## WeChat Group
+
+![WeChat Group](qr_code_wechat_group.png)

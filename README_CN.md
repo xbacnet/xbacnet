@@ -93,9 +93,14 @@ sudo systemctl start xbacnet-server.service
 * 如何使用
 在数据库中的添加对象，编辑对象属性，把要发布的数据写入present_value
 
-* 开发计划 TODO
+## 开发计划
+
 1. 增加日志
 2. 自动重加载对象列表
 3. 增加异常处理
 4. 增加API
 5. 增加Web界面
+
+## 微信群
+
+![WeChat Group](qr_code_wechat_group.png)
