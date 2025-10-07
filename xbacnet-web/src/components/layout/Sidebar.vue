@@ -6,7 +6,7 @@
       <el-icon class="logo-icon" :size="32" v-else><Setting /></el-icon>
       <span v-if="!isCollapsed" class="logo-text">XBACnet</span>
     </div>
-    
+
     <!-- Navigation Menu -->
     <el-menu
       :default-active="activeMenu"
@@ -21,9 +21,9 @@
       <!-- Dashboard -->
       <el-menu-item index="/dashboard">
         <el-icon><Dashboard /></el-icon>
-        <template #title>Dashboard</template>
+        <template #title>{{ $t('navigation.dashboard') }}</template>
       </el-menu-item>
-      
+
       <!-- Analog Objects -->
       <el-sub-menu index="analog">
         <template #title>
@@ -32,18 +32,18 @@
         </template>
         <el-menu-item index="/analog-inputs">
           <el-icon><DataLine /></el-icon>
-          <template #title>Analog Inputs</template>
+          <template #title>{{ $t('navigation.analogInputs') }}</template>
         </el-menu-item>
         <el-menu-item index="/analog-outputs">
           <el-icon><Setting /></el-icon>
-          <template #title>Analog Outputs</template>
+          <template #title>{{ $t('navigation.analogOutputs') }}</template>
         </el-menu-item>
         <el-menu-item index="/analog-values">
           <el-icon><DataAnalysis /></el-icon>
-          <template #title>Analog Values</template>
+          <template #title>{{ $t('navigation.analogValues') }}</template>
         </el-menu-item>
       </el-sub-menu>
-      
+
       <!-- Binary Objects -->
       <el-sub-menu index="binary">
         <template #title>
@@ -63,7 +63,7 @@
           <template #title>Binary Values</template>
         </el-menu-item>
       </el-sub-menu>
-      
+
       <!-- Multi-state Objects -->
       <el-sub-menu index="multi-state">
         <template #title>
@@ -83,7 +83,7 @@
           <template #title>Multi-state Values</template>
         </el-menu-item>
       </el-sub-menu>
-      
+
       <!-- User Management -->
       <el-menu-item index="/users">
         <el-icon><User /></el-icon>
@@ -120,18 +120,18 @@ const activeMenu = computed(() => route.path)
   padding: 0 20px;
   border-bottom: 1px solid var(--border-color);
   gap: 10px;
-  
+
   .logo-image {
     height: 32px;
     width: 32px;
     flex-shrink: 0;
   }
-  
+
   .logo-icon {
     color: var(--sidebar-text);
     flex-shrink: 0;
   }
-  
+
   .logo-text {
     color: var(--sidebar-text);
     font-size: 18px;
@@ -143,33 +143,33 @@ const activeMenu = computed(() => route.path)
 .sidebar-menu {
   flex: 1;
   border-right: none;
-  
+
   .el-menu-item {
     height: 50px;
     line-height: 50px;
-    
+
     &:hover {
       background-color: rgba(255, 255, 255, 0.1);
     }
-    
+
     &.is-active {
       background-color: var(--sidebar-active);
       color: #fff;
     }
   }
-  
+
   .el-submenu__title {
     height: 50px;
     line-height: 50px;
-    
+
     &:hover {
       background-color: rgba(255, 255, 255, 0.1);
     }
   }
-  
+
   .el-submenu .el-menu-item {
     background-color: rgba(0, 0, 0, 0.1);
-    
+
     &:hover {
       background-color: rgba(255, 255, 255, 0.1);
     }

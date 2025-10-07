@@ -2,19 +2,19 @@
   <div class="analog-inputs">
     <!-- Page Header -->
     <div class="page-header">
-      <h1>Analog Input Objects</h1>
-      <p>Manage analog input objects in the BACnet system</p>
+      <h1>{{ $t('navigation.analogInputs') }}</h1>
+      <p>{{ $t('objects.description') }}</p>
     </div>
     
     <!-- Action Buttons -->
     <div class="action-buttons">
       <el-button type="primary" @click="showCreateDialog">
         <el-icon><Plus /></el-icon>
-        Create Analog Input
+        {{ $t('objects.add') }}
       </el-button>
       <el-button @click="loadData">
         <el-icon><Refresh /></el-icon>
-        Refresh
+        {{ $t('objects.refresh') }}
       </el-button>
     </div>
     
@@ -28,16 +28,16 @@
         style="width: 100%"
       >
         <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="object_identifier" label="Object ID" width="120" />
-        <el-table-column prop="object_name" label="Object Name" min-width="150" />
-        <el-table-column prop="present_value" label="Present Value" width="120">
+        <el-table-column prop="object_identifier" :label="$t('objects.objectIdentifier')" width="120" />
+        <el-table-column prop="object_name" :label="$t('objects.objectName')" min-width="150" />
+        <el-table-column prop="present_value" :label="$t('objects.presentValue')" width="120">
           <template #default="{ row }">
             <span class="value-display">{{ row.present_value }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="description" label="Description" min-width="200" />
-        <el-table-column prop="units" label="Units" width="120" />
-        <el-table-column prop="event_state" label="Event State" width="120">
+        <el-table-column prop="description" :label="$t('objects.description')" min-width="200" />
+        <el-table-column prop="units" :label="$t('objects.units')" width="120" />
+        <el-table-column prop="event_state" :label="$t('objects.eventState')" width="120">
           <template #default="{ row }">
             <el-tag :type="getEventStateType(row.event_state)">
               {{ row.event_state }}

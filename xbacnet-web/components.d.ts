@@ -40,6 +40,7 @@ declare module 'vue' {
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     ElTag: typeof import('element-plus/es')['ElTag']
     Header: typeof import('./src/components/layout/Header.vue')['default']
+    InternationalizedObjectForm: typeof import('./src/components/common/InternationalizedObjectForm.vue')['default']
     LanguageSwitcher: typeof import('./src/components/layout/LanguageSwitcher.vue')['default']
     Layout: typeof import('./src/components/layout/Layout.vue')['default']
     ObjectForm: typeof import('./src/components/common/ObjectForm.vue')['default']
