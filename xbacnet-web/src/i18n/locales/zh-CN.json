@@ -1,0 +1,96 @@
+{
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "add": "添加",
+    "search": "搜索",
+    "reset": "重置",
+    "confirm": "确认",
+    "loading": "加载中...",
+    "noData": "暂无数据",
+    "actions": "操作",
+    "status": "状态",
+    "name": "名称",
+    "description": "描述",
+    "created": "创建时间",
+    "updated": "更新时间"
+  },
+  "auth": {
+    "login": "登录",
+    "logout": "退出",
+    "username": "用户名",
+    "password": "密码",
+    "loginSuccess": "登录成功",
+    "loginFailed": "登录失败",
+    "invalidCredentials": "用户名或密码错误",
+    "defaultCredentials": "默认凭据：administrator / !BACnetPro1"
+  },
+  "navigation": {
+    "dashboard": "仪表板",
+    "analogInputs": "模拟输入",
+    "analogOutputs": "模拟输出",
+    "analogValues": "模拟值",
+    "binaryInputs": "二进制输入",
+    "binaryOutputs": "二进制输出",
+    "binaryValues": "二进制值",
+    "multiStateInputs": "多状态输入",
+    "multiStateOutputs": "多状态输出",
+    "multiStateValues": "多状态值",
+    "userManagement": "用户管理",
+    "settings": "设置"
+  },
+  "dashboard": {
+    "title": "XBACnet 仪表板",
+    "welcome": "欢迎使用 XBACnet",
+    "totalObjects": "对象总数",
+    "activeObjects": "活动对象",
+    "systemStatus": "系统状态",
+    "recentActivity": "最近活动"
+  },
+  "objects": {
+    "objectIdentifier": "对象标识符",
+    "objectName": "对象名称",
+    "presentValue": "当前值",
+    "statusFlags": "状态标志",
+    "eventState": "事件状态",
+    "outOfService": "停止服务",
+    "units": "单位",
+    "covIncrement": "COV 增量",
+    "relinquishDefault": "释放默认值",
+    "currentCommandPriority": "当前命令优先级",
+    "addObject": "添加对象",
+    "editObject": "编辑对象",
+    "deleteObject": "删除对象",
+    "confirmDelete": "确定要删除此对象吗？",
+    "objectCreated": "对象创建成功",
+    "objectUpdated": "对象更新成功",
+    "objectDeleted": "对象删除成功"
+  },
+  "users": {
+    "userManagement": "用户管理",
+    "addUser": "添加用户",
+    "editUser": "编辑用户",
+    "deleteUser": "删除用户",
+    "displayName": "显示名称",
+    "email": "邮箱",
+    "isAdmin": "是否管理员",
+    "confirmDeleteUser": "确定要删除此用户吗？",
+    "userCreated": "用户创建成功",
+    "userUpdated": "用户更新成功",
+    "userDeleted": "用户删除成功"
+  },
+  "language": {
+    "switchLanguage": "切换语言",
+    "english": "English",
+    "chinese": "中文"
+  },
+  "errors": {
+    "serverError": "服务器错误，请稍后重试。",
+    "networkError": "网络错误，请检查您的连接。",
+    "validationError": "验证错误",
+    "required": "此字段为必填项",
+    "invalidFormat": "格式无效"
+  }
+}
