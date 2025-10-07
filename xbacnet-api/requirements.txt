@@ -15,11 +15,11 @@ jsonschema==4.20.0
 falcon-cors==1.1.7
 
 # Environment variable management
-python-dotenv==1.0.0
+python-decouple==3.8
 
 # HTTP client for testing
 requests==2.31.0
 
 # Development dependencies
 pytest==7.4.3
-pytest-falcon==0.5.0
+pytest-falcon==0.4.2

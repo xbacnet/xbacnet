@@ -13,6 +13,7 @@ import mysql.connector
 from mysql.connector import Error
 from datetime import datetime
 from typing import Dict, List, Optional, Any
+from decimal import Decimal
 from config import DATABASE_CONFIG
 import logging
 
@@ -247,8 +248,19 @@ class BaseModel:
             cursor.execute(data_query, (page_size, offset))
             data = cursor.fetchall()
 
+            # Convert Decimal objects to float for JSON serialization
+            serialized_data = []
+            for row in data or []:
+                serialized_row = {}
+                for key, value in row.items():
+                    if isinstance(value, Decimal):
+                        serialized_row[key] = float(value)
+                    else:
+                        serialized_row[key] = value
+                serialized_data.append(serialized_row)
+
             return {
-                'data': data or [],
+                'data': serialized_data,
                 'pagination': {
                     'page': page,
                     'page_size': page_size,
@@ -282,7 +294,18 @@ class BaseModel:
             cursor = connection.cursor(dictionary=True)
             query = f"SELECT * FROM {self.table_name} WHERE id = %s"
             cursor.execute(query, (object_id,))
-            return cursor.fetchone()
+            result = cursor.fetchone()
+
+            # Convert Decimal objects to float for JSON serialization
+            if result:
+                serialized_result = {}
+                for key, value in result.items():
+                    if isinstance(value, Decimal):
+                        serialized_result[key] = float(value)
+                    else:
+                        serialized_result[key] = value
+                return serialized_result
+            return None
         except Error as e:
             logger.error(f"Error in get_by_id: {e}")
             raise
@@ -309,7 +332,18 @@ class BaseModel:
             cursor = connection.cursor(dictionary=True)
             query = f"SELECT * FROM {self.table_name} WHERE object_identifier = %s"
             cursor.execute(query, (object_identifier,))
-            return cursor.fetchone()
+            result = cursor.fetchone()
+
+            # Convert Decimal objects to float for JSON serialization
+            if result:
+                serialized_result = {}
+                for key, value in result.items():
+                    if isinstance(value, Decimal):
+                        serialized_result[key] = float(value)
+                    else:
+                        serialized_result[key] = value
+                return serialized_result
+            return None
         except Error as e:
             logger.error(f"Error in get_by_identifier: {e}")
             raise

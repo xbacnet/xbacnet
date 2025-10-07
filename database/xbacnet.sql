@@ -427,8 +427,8 @@ INSERT INTO `xbacnet`.`tbl_users`(`id`, `name`, `uuid`, `display_name`, `email`,
   `password`, `is_admin`)
 VALUES
 (1, 'administrator', '19957e99-e5ae-445b-bfbb-d3f8219a8715', 'Administrator',
-   'administrator@xbacnet.com', 'a3ee9aa8519e4f3ab756d68ee0cdd76e',
-   'aabba725223e87c33bea01e98a9b0d47f916abb82c714b089dc410aa612ce97bb5ee6cca5514b12ea7db152e7be5b1328a730e94f3975d11f899b7e3e3e34799', 1);
+   'administrator@xbacnet.com', 'a24ccbf2ff5cbb57f5f20527c05e2d6a',
+   'bfa6b9744af645863bb2abd6c9865d0896ad828b23d1ec070b2ed6e96f02d6e8ebc06a18b43c1e0e4e97b9b2d636f8d56134dcbfecde0d8b6258bea5690a0b00', 1);
 COMMIT;
 
 -- ---------------------------------------------------------------------------------------------------------------------

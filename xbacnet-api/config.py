@@ -8,19 +8,15 @@ Author: XBACnet Team
 Date: 2024
 """
 
-import os
-from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
+from decouple import config
 
 # Database Configuration
 DATABASE_CONFIG = {
-    'host': os.getenv('XBACNET_DB_HOST', 'localhost'),
-    'port': int(os.getenv('XBACNET_DB_PORT', '3306')),
-    'user': os.getenv('XBACNET_DB_USER', 'root'),
-    'password': os.getenv('XBACNET_DB_PASSWORD', ''),
-    'database': os.getenv('XBACNET_DB_NAME', 'xbacnet'),
+    'host': config('XBACNET_DB_HOST', default='localhost'),
+    'port': config('XBACNET_DB_PORT', default=3306, cast=int),
+    'user': config('XBACNET_DB_USER', default='root'),
+    'password': config('XBACNET_DB_PASSWORD', default=''),
+    'database': config('XBACNET_DB_NAME', default='xbacnet'),
     'charset': 'utf8mb4',
     'autocommit': True,
     'time_zone': '+00:00'
@@ -28,14 +24,14 @@ DATABASE_CONFIG = {
 
 # API Server Configuration
 API_CONFIG = {
-    'host': os.getenv('XBACNET_API_HOST', '0.0.0.0'),
-    'port': int(os.getenv('XBACNET_API_PORT', '8000')),
-    'debug': os.getenv('XBACNET_API_DEBUG', 'False').lower() == 'true'
+    'host': config('XBACNET_API_HOST', default='0.0.0.0'),
+    'port': config('XBACNET_API_PORT', default=8000, cast=int),
+    'debug': config('XBACNET_API_DEBUG', default=False, cast=bool)
 }
 
 # CORS Configuration
 CORS_CONFIG = {
-    'allow_origins': os.getenv('XBACNET_CORS_ORIGINS', '*').split(','),
+    'allow_origins': config('XBACNET_CORS_ORIGINS', default='*').split(','),
     'allow_methods': ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     'allow_headers': ['Content-Type', 'Authorization', 'X-Requested-With'],
     'max_age': 3600
@@ -43,15 +39,15 @@ CORS_CONFIG = {
 
 # Logging Configuration
 LOGGING_CONFIG = {
-    'level': os.getenv('XBACNET_LOG_LEVEL', 'INFO'),
+    'level': config('XBACNET_LOG_LEVEL', default='INFO'),
     'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    'file': os.getenv('XBACNET_LOG_FILE', 'xbacnet-api.log')
+    'file': config('XBACNET_LOG_FILE', default='xbacnet-api.log')
 }
 
 # Pagination Configuration
 PAGINATION_CONFIG = {
-    'default_page_size': int(os.getenv('XBACNET_DEFAULT_PAGE_SIZE', '20')),
-    'max_page_size': int(os.getenv('XBACNET_MAX_PAGE_SIZE', '100'))
+    'default_page_size': config('XBACNET_DEFAULT_PAGE_SIZE', default=20, cast=int),
+    'max_page_size': config('XBACNET_MAX_PAGE_SIZE', default=100, cast=int)
 }
 
 # BACnet Object Configuration

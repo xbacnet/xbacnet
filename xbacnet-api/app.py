@@ -11,7 +11,28 @@ Date: 2024
 
 import falcon
 import logging
-from falcon_cors import CORS
+# from falcon_cors import CORS
+
+class CORSMiddleware:
+    """Custom CORS middleware for Falcon"""
+
+    def process_request(self, req, resp):
+        """Process CORS preflight requests"""
+        if req.method == 'OPTIONS':
+            # Handle preflight requests
+            resp.set_header('Access-Control-Allow-Origin', '*')
+            resp.set_header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+            resp.set_header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+            resp.set_header('Access-Control-Max-Age', '3600')
+            resp.status = falcon.HTTP_200
+            return True
+
+    def process_response(self, req, resp, resource, req_succeeded):
+        """Add CORS headers to all responses"""
+        resp.set_header('Access-Control-Allow-Origin', '*')
+        resp.set_header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+        resp.set_header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+
 from resources import (
     AnalogInputResource, AnalogOutputResource, AnalogValueResource,
     BinaryInputResource, BinaryOutputResource, BinaryValueResource,
@@ -58,18 +79,10 @@ def create_app():
     Returns:
         falcon.App: Configured Falcon application instance
     """
-    # Configure CORS
-    cors = CORS(
-        allow_origins_list=CORS_CONFIG['allow_origins'],
-        allow_methods_list=CORS_CONFIG['allow_methods'],
-        allow_headers_list=CORS_CONFIG['allow_headers'],
-        max_age=CORS_CONFIG['max_age']
-    )
-
-    # Create Falcon application with CORS middleware
+    # Create Falcon application with custom CORS middleware
     app = falcon.App(
         middleware=[
-            cors.middleware,
+            CORSMiddleware(),
             RequireJSON()
         ]
     )

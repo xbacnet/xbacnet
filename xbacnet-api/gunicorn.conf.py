@@ -56,12 +56,12 @@ limit_request_fields = 100
 limit_request_field_size = 8190
 
 # Performance tuning
-worker_tmp_dir = '/dev/shm'  # Use shared memory for better performance
+worker_tmp_dir = None  # Use default temp directory (macOS compatible)
 
 def when_ready(server):
     """
     Called just after the server is started.
-    
+
     Args:
         server: Gunicorn server instance
     """
@@ -70,7 +70,7 @@ def when_ready(server):
 def worker_int(worker):
     """
     Called just after a worker has been interrupted.
-    
+
     Args:
         worker: Gunicorn worker instance
     """
@@ -79,7 +79,7 @@ def worker_int(worker):
 def pre_fork(server, worker):
     """
     Called just before a worker is forked.
-    
+
     Args:
         server: Gunicorn server instance
         worker: Gunicorn worker instance
@@ -89,7 +89,7 @@ def pre_fork(server, worker):
 def post_fork(server, worker):
     """
     Called just after a worker has been forked.
-    
+
     Args:
         server: Gunicorn server instance
         worker: Gunicorn worker instance
@@ -99,7 +99,7 @@ def post_fork(server, worker):
 def post_worker_init(worker):
     """
     Called just after a worker has initialized the application.
-    
+
     Args:
         worker: Gunicorn worker instance
     """
@@ -108,7 +108,7 @@ def post_worker_init(worker):
 def worker_abort(worker):
     """
     Called when a worker receives the SIGABRT signal.
-    
+
     Args:
         worker: Gunicorn worker instance
     """
