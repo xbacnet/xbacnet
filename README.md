@@ -1,7 +1,7 @@
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">xBACnet v1.0.0</h1>
 <h4 align="center">Publish Any Data as BACnet</h4>
 
-[简体中文](./README_CN.md) | [English](./README.md)
+[简体中文](./README_CN.md) | [English](./README.md) | [Français](./README_FR.md) | [Español](./README_ES.md) | [Русский](./README_RU.md) | [Português](./README_PT.md) | [हिन्दी](./README_HI.md) | [Bahasa Indonesia](./README_ID.md) | [Bahasa Melayu](./README_MS.md) | [Tiếng Việt](./README_VI.md) | [Türkçe](./README_TR.md) | [العربية](./README_AR.md)
 
 ## xBACnet Introduction
 
@@ -13,7 +13,7 @@ and I-Am for device binding, Read and Write Property, Read and Write
 Property Multiple, and COV subscriptions.
 
 
-## Prerequisites 
+## Prerequisites
 MySQL Server
 Python (3.4 3.5 3.6 3.7 3.8 3.9 3.10)
 
@@ -24,7 +24,7 @@ Python (3.4 3.5 3.6 3.7 3.8 3.9 3.10)
 ```
 git clone https://gitee.com/xbacnet/xbacnet
 ```
-* Create Database 
+* Create Database
 ```
 mysql -u root -p < xbacnet/database/xbacnet.sql
 ```
@@ -37,7 +37,7 @@ sudo pip install -r requirements.txt
 
 * Configure xbacnet-server
 
-Open config file for local device address 
+Open config file for local device address
 Modify address: lo to the actual interface name by running 'ip a'
 Modify objectIdentifier
 ```

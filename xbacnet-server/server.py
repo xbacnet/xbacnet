@@ -1,3 +1,25 @@
+"""
+XBACnet Server - BACnet Protocol Implementation
+
+This module implements a BACnet server that provides BACnet objects and services
+for building automation and control systems. It supports various BACnet object types
+including analog inputs/outputs, binary inputs/outputs, and multi-state objects.
+
+The server integrates with a MySQL database for persistent storage of object properties
+and provides automatic synchronization between the BACnet objects and database records.
+
+Key Features:
+- BACnet/IP communication protocol
+- Multiple object type support (Analog, Binary, Multi-state)
+- Database persistence for object properties
+- Automatic property refresh from database
+- Change of Value (COV) notifications
+- Read/Write property services
+
+Author: XBACnet Team
+Date: 2024
+"""
+
 from bacpypes.debugging import bacpypes_debugging, ModuleLogger
 from bacpypes.consolelogging import ConfigArgumentParser
 from bacpypes.core import run
@@ -20,52 +42,71 @@ from bacpypes.primitivedata import Integer
 import mysql.connector
 import settings
 
-# globals
-_debug = 0
-_log = ModuleLogger(globals())
-pro_application = None
-object_list = list()
+# Global variables for debugging and application state
+_debug = 0  # Debug level (0 = off, higher values = more verbose)
+_log = ModuleLogger(globals())  # Logger for debugging and error messages
+pro_application = None  # Main BACnet application instance
+object_list = list()  # List of all BACnet objects managed by this server
 
 
 @bacpypes_debugging
 class ProApplication(BIPSimpleApplication, ReadWritePropertyMultipleServices, ChangeOfValueServices):
+    """
+    Main BACnet application class that combines multiple BACnet services.
+
+    This class inherits from:
+    - BIPSimpleApplication: Basic BACnet/IP application functionality
+    - ReadWritePropertyMultipleServices: Support for reading/writing multiple properties
+    - ChangeOfValueServices: Support for COV (Change of Value) notifications
+
+    The application handles BACnet communication, property access, and value change notifications.
+    """
     pass
 
 
 ########################################################################################################################
-# This task saves all writeable properties to database
+# Persistence Task - Saves Writable Properties to Database
 #
-# When a property is designated as writable or W, this shall mean that the property is required to be present in all
-# BACnet standard objects of that type and that the value of the property can be changed through the use of one or more
-# of the WriteProperty services defined in this standard. The value of W properties may be examined through the use of
-# one or more of the ReadProperty services defined in this standard.
+# This task periodically saves all writable properties from BACnet objects to the database.
+# According to BACnet standards, writable properties (marked as 'W') are required to be present
+# in all BACnet standard objects of that type and can be changed through WriteProperty services.
 #
-# NOTE: THIS TASK WILL PERSISTENT THE FOLLOWING OBJECT'S PROPERTIES,
-#       THEY SHOULD BE UPDATED BY WRITE PROPERTY SERVICE.
-# Analog Output Object      | Present_Value
-# Binary Output Object      | Present_Value
-# Multi-state Output Object | Present_Value
+# The task specifically handles the following writable object properties:
+# - Analog Output Object: Present_Value
+# - Binary Output Object: Present_Value
+# - Multi-state Output Object: Present_Value
+#
+# These properties are updated when BACnet clients use WriteProperty services to change values.
+# The persistence task ensures that these changes are saved to the database for reliability.
 #
 ########################################################################################################################
 @bacpypes_debugging
 class Persistence(RecurringTask):
 
     def __init__(self, interval):
+        """
+        Initialize the persistence task with specified interval.
+
+        Args:
+            interval (int): Interval in seconds between persistence operations
+        """
         if _debug:
             Persistence._debug("__init__ %r", interval)
-        RecurringTask.__init__(self, interval * 1000)
+        RecurringTask.__init__(self, interval * 1000)  # Convert seconds to milliseconds
 
-        # save the interval
+        # Save the interval for reference
         self.interval = interval
 
-        # connect to database
+        # Initialize database connection variables
         self.cursor = None
         self.cnx = None
         try:
+            # Connect to MySQL database using settings configuration
             self.cnx = mysql.connector.connect(**settings.xbacnet)
-            self.cursor = self.cnx.cursor(dictionary=True)
+            self.cursor = self.cnx.cursor(dictionary=True)  # Use dictionary cursor for named columns
         except Exception as e:
             _log.error("Error in WriteablePropertiesPersistence init " + str(e))
+            # Clean up database connections on error
             if self.cursor:
                 self.cursor.close()
             if self.cnx:
@@ -78,6 +119,14 @@ class Persistence(RecurringTask):
     # STEP 3: Update properties to database
     ####################################################################################################################
     def process_task(self):
+        """
+        Main task execution method that runs periodically.
+
+        This method:
+        1. Checks database connectivity and reconnects if necessary
+        2. Reads current values of writable properties from BACnet objects
+        3. Updates the database with the current property values
+        """
         global object_list
         if _debug:
             Persistence._debug("process_task")
@@ -85,12 +134,15 @@ class Persistence(RecurringTask):
         ################################################################################################################
         # STEP 1: Check database connectivity
         ################################################################################################################
+        # Verify database connection is still active, reconnect if needed
         if not self.cursor or not self.cnx.is_connected():
             try:
+                # Reconnect to database
                 self.cnx = mysql.connector.connect(**settings.xbacnet)
                 self.cursor = self.cnx.cursor(dictionary=True)
             except Exception as e:
                 _log.error("Error in WriteablePropertiesPersistence process_task " + str(e))
+                # Clean up connections on error
                 if self.cursor:
                     self.cursor.close()
                 if self.cnx:
@@ -101,18 +153,25 @@ class Persistence(RecurringTask):
         ################################################################################################################
         if _debug:
             Persistence._debug("STEP 2: Read writable properties of objects: " + str(object_list))
-        analog_output_object_dict = dict()
-        binary_output_object_dict = dict()
-        multi_state_output_object_dict = dict()
 
+        # Initialize dictionaries to store current values of writable properties
+        analog_output_object_dict = dict()      # Store analog output present values
+        binary_output_object_dict = dict()      # Store binary output present values
+        multi_state_output_object_dict = dict() # Store multi-state output present values
+
+        # Iterate through all BACnet objects and extract writable properties
         for i in range(len(object_list)):
             if object_list[i].objectType == 'analogOutput':
+                # Store analog output present value with object identifier as key
                 analog_output_object_dict[object_list[i].objectIdentifier[1]] = object_list[i].presentValue
             elif object_list[i].objectType == 'binaryOutput':
+                # Store binary output present value with object identifier as key
                 binary_output_object_dict[object_list[i].objectIdentifier[1]] = object_list[i].presentValue
             elif object_list[i].objectType == 'multiStateOutput':
+                # Store multi-state output present value with object identifier as key
                 multi_state_output_object_dict[object_list[i].objectIdentifier[1]] = object_list[i].presentValue
             else:
+                # Skip non-writable object types
                 pass
 
         ################################################################################################################
@@ -122,65 +181,79 @@ class Persistence(RecurringTask):
         if _debug:
             Persistence._debug("STEP 3: Update properties to database: " + str(object_list))
 
+        # Update analog output objects in database
         if len(analog_output_object_dict) > 0:
             for object_identifier in analog_output_object_dict:
                 try:
+                    # Update present_value for analog output object
                     update = (" UPDATE tbl_analog_output_objects "
                               " SET present_value = %s "
                               " WHERE (object_identifier = %s ")
                     self.cursor.execute(update, (analog_output_object_dict[object_identifier],
                                                  object_identifier,))
-                    self.cnx.commit()
+                    self.cnx.commit()  # Commit the transaction
                 except Exception as e:
+                    # Handle database errors and clean up connections
                     if self.cursor:
                         self.cursor.close()
                     if self.cnx:
                         self.cnx.close()
 
+        # Update binary output objects in database
         if len(binary_output_object_dict) > 0:
             for object_identifier in binary_output_object_dict:
                 try:
+                    # Update present_value for binary output object
                     update = (" UPDATE tbl_binary_output_objects "
                               " SET present_value = %s "
                               " WHERE (object_identifier = %s ")
                     self.cursor.execute(update, (binary_output_object_dict[object_identifier],
                                                  object_identifier,))
-                    self.cnx.commit()
+                    self.cnx.commit()  # Commit the transaction
                 except Exception as e:
+                    # Handle database errors and clean up connections
                     if self.cursor:
                         self.cursor.close()
                     if self.cnx:
                         self.cnx.close()
 
+        # Update multi-state output objects in database
         if len(multi_state_output_object_dict) > 0:
             for object_identifier in multi_state_output_object_dict:
                 try:
+                    # Update present_value for multi-state output object
                     update = (" UPDATE tbl_multi_state_output_objects "
                               " SET present_value = %s "
                               " WHERE (object_identifier = %s ")
                     self.cursor.execute(update, (multi_state_output_object_dict[object_identifier],
                                                  object_identifier,))
-                    self.cnx.commit()
+                    self.cnx.commit()  # Commit the transaction
                 except Exception as e:
+                    # Handle database errors and clean up connections
                     if self.cursor:
                         self.cursor.close()
                     if self.cnx:
                         self.cnx.close()
 
+        # Clean up database connections
         if self.cursor:
             self.cursor.close()
         if self.cnx:
             self.cnx.close()
 
 ########################################################################################################################
-# INTRODUCE:
-# This task will refresh all readable properties from database
+# Refreshing Task - Updates Readable Properties from Database
 #
-# NOTE: DO NOT REFRESH THE FOLLOWING OBJECT'S PROPERTIES.
-#       THEY SHOULD BE UPDATED BY WRITE PROPERTY SERVICE.
-# Analog Output Object      | Present_Value
-# Binary Output Object      | Present_Value
-# Multi-state Output Object | Present_Value
+# This task periodically refreshes all readable properties of BACnet objects from the database.
+# It ensures that the BACnet objects reflect the current state stored in the database.
+#
+# IMPORTANT: This task does NOT refresh the following writable properties:
+# - Analog Output Object: Present_Value
+# - Binary Output Object: Present_Value
+# - Multi-state Output Object: Present_Value
+#
+# These properties should only be updated through BACnet WriteProperty services to maintain
+# proper BACnet protocol compliance and avoid conflicts with client write operations.
 #
 ########################################################################################################################
 @bacpypes_debugging
@@ -191,21 +264,29 @@ class Refreshing(RecurringTask):
     # STEP 1: Connect to the database
     ####################################################################################################################
     def __init__(self, interval):
+        """
+        Initialize the refreshing task with specified interval.
+
+        Args:
+            interval (int): Interval in seconds between refresh operations
+        """
         if _debug:
             Refreshing._debug("__init__ %r", interval)
-        RecurringTask.__init__(self, interval * 1000)
+        RecurringTask.__init__(self, interval * 1000)  # Convert seconds to milliseconds
 
-        # save the interval
+        # Save the interval for reference
         self.interval = interval
 
-        # connect to database
+        # Initialize database connection variables
         self.cursor = None
         self.cnx = None
         try:
+            # Connect to MySQL database using settings configuration
             self.cnx = mysql.connector.connect(**settings.xbacnet)
-            self.cursor = self.cnx.cursor(dictionary=True)
+            self.cursor = self.cnx.cursor(dictionary=True)  # Use dictionary cursor for named columns
         except Exception as e:
             _log.error("Error in  ReadablePropertiesRefreshing init " + str(e))
+            # Clean up database connections on error
             if self.cursor:
                 self.cursor.close()
             if self.cnx:
@@ -218,6 +299,14 @@ class Refreshing(RecurringTask):
     # STEP 3: Update properties of objects
     ####################################################################################################################
     def process_task(self):
+        """
+        Main task execution method that runs periodically.
+
+        This method:
+        1. Checks database connectivity and reconnects if necessary
+        2. Reads all object properties from the database
+        3. Updates the corresponding BACnet object properties
+        """
         global object_list
         if _debug:
             Refreshing._debug("process_task")
@@ -228,12 +317,15 @@ class Refreshing(RecurringTask):
         ################################################################################################################
         # STEP 1: Check database connectivity
         ################################################################################################################
+        # Verify database connection is still active, reconnect if needed
         if not self.cursor or not self.cnx.is_connected():
             try:
+                # Reconnect to database
                 self.cnx = mysql.connector.connect(**settings.xbacnet)
                 self.cursor = self.cnx.cursor(dictionary=True)
             except Exception as e:
                 _log.error("Error in ReadablePropertiesRefreshing process_task " + str(e))
+                # Clean up connections on error
                 if self.cursor:
                     self.cursor.close()
                 if self.cnx:
@@ -242,18 +334,19 @@ class Refreshing(RecurringTask):
         ################################################################################################################
         # STEP 2: Read objects from database
         ################################################################################################################
-        analog_input_object_dict = dict()
-        analog_output_object_dict = dict()
-        analog_value_object_dict = dict()
-        binary_input_object_dict = dict()
-        binary_output_object_dict = dict()
-        binary_value_object_dict = dict()
-        multi_state_input_object_dict = dict()
-        multi_state_output_object_dict = dict()
-        multi_state_value_object_dict = dict()
+        # Initialize dictionaries to store object properties from database
+        analog_input_object_dict = dict()      # Analog input objects
+        analog_output_object_dict = dict()     # Analog output objects
+        analog_value_object_dict = dict()      # Analog value objects
+        binary_input_object_dict = dict()      # Binary input objects
+        binary_output_object_dict = dict()     # Binary output objects
+        binary_value_object_dict = dict()      # Binary value objects
+        multi_state_input_object_dict = dict() # Multi-state input objects
+        multi_state_output_object_dict = dict() # Multi-state output objects
+        multi_state_value_object_dict = dict() # Multi-state value objects
 
-        # step 2.1
-        # todo: recover once database server is available from system reboot
+        # Step 2.1: Read analog input objects from database
+        # TODO: Add recovery mechanism for database server availability after system reboot
         query = (" SELECT id, object_identifier, object_name, present_value, description, status_flags, event_state, "
                  "        out_of_service, units, cov_increment "
                  " FROM tbl_analog_input_objects ")
@@ -659,7 +752,7 @@ class Refreshing(RecurringTask):
 
 
 ########################################################################################################################
-# PROCEDURES
+# Main Application Procedures
 # STEP1: Create the device and application
 # STEP2: Get all objects from database
 # STEP3: Create objects and append them to the application
@@ -668,14 +761,25 @@ class Refreshing(RecurringTask):
 ########################################################################################################################
 
 def main():
+    """
+    Main function that initializes and runs the BACnet server.
+
+    This function:
+    1. Creates the BACnet device and application
+    2. Loads all objects from the database
+    3. Creates BACnet objects and adds them to the application
+    4. Installs background tasks for persistence and refreshing
+    5. Starts the BACnet server
+    """
     ####################################################################################################################
     # STEP1: Create the device and application
     ####################################################################################################################
     global pro_application, object_list
-    # make a parser
+
+    # Create command line argument parser
     parser = ConfigArgumentParser(description=__doc__)
 
-    # parse the command line arguments
+    # Parse the command line arguments
     args = parser.parse_args()
 
     if _debug:
@@ -683,42 +787,49 @@ def main():
     if _debug:
         _log.debug("    - args: %r", args)
 
-    # make a device object
+    # Create the local BACnet device object
     this_device = LocalDeviceObject(ini=args.ini)
     if _debug:
         _log.debug("    - this_device: %r", this_device)
 
-    # make an application
+    # Create the main BACnet application
     pro_application = ProApplication(this_device, args.ini.address)
 
     ####################################################################################################################
     # STEP2: Get all objects from database
     ####################################################################################################################
-    analog_input_object_list = list()
-    analog_output_object_list = list()
-    analog_value_object_list = list()
-    binary_input_object_list = list()
-    binary_output_object_list = list()
-    binary_value_object_list = list()
-    multi_state_input_object_list = list()
-    multi_state_output_object_list = list()
-    multi_state_value_object_list = list()
+    # Initialize lists to store object data from database
+    analog_input_object_list = list()      # Analog input objects
+    analog_output_object_list = list()     # Analog output objects
+    analog_value_object_list = list()      # Analog value objects
+    binary_input_object_list = list()      # Binary input objects
+    binary_output_object_list = list()     # Binary output objects
+    binary_value_object_list = list()      # Binary value objects
+    multi_state_input_object_list = list() # Multi-state input objects
+    multi_state_output_object_list = list() # Multi-state output objects
+    multi_state_value_object_list = list() # Multi-state value objects
+
+    # Initialize database connection variables
     cursor = None
     cnx = None
     try:
+        # Connect to MySQL database
         cnx = mysql.connector.connect(**settings.xbacnet)
-        cursor = cnx.cursor(dictionary=True)
-        # step 2.1
+        cursor = cnx.cursor(dictionary=True)  # Use dictionary cursor for named columns
+        # Step 2.1: Query analog input objects from database
         query = (" SELECT id, object_identifier, object_name, present_value, description, status_flags, event_state, "
                  "        out_of_service, units, cov_increment "
                  " FROM tbl_analog_input_objects ")
         cursor.execute(query)
         rows_objects = cursor.fetchall()
 
+        # Process analog input objects if any exist
         if rows_objects is not None and len(rows_objects) > 0:
             for row in rows_objects:
                 if _debug:
                     _log.debug(str(row))
+
+                # Create dictionary with object properties
                 result = dict()
                 result['id'] = row['id']
                 result['object_identifier'] = int(row['object_identifier'])
@@ -734,17 +845,20 @@ def main():
         if _debug:
             _log.debug(str(analog_input_object_list))
 
-        # step 2.2
+        # Step 2.2: Query analog output objects from database
         query = (" SELECT id, object_identifier, object_name, present_value, description, status_flags, event_state, "
                  "        out_of_service, units, relinquish_default, current_command_priority, cov_increment "
                  " FROM tbl_analog_output_objects ")
         cursor.execute(query)
         rows_objects = cursor.fetchall()
 
+        # Process analog output objects if any exist
         if rows_objects is not None and len(rows_objects) > 0:
             for row in rows_objects:
                 if _debug:
                     _log.debug(str(row))
+
+                # Create dictionary with object properties
                 result = dict()
                 result['id'] = row['id']
                 result['object_identifier'] = int(row['object_identifier'])
@@ -958,8 +1072,10 @@ def main():
         if _debug:
             _log.debug(str(multi_state_value_object_list))
     except Exception as e:
+        # Handle database connection errors
         _log.error("Error in  main procedure " + str(e))
     finally:
+        # Always clean up database connections
         if cursor:
             cursor.close()
         if cnx:
@@ -969,214 +1085,243 @@ def main():
     # STEP3: Create objects and append them to the application
     ####################################################################################################################
 
-    # step 3.1
+    # Step 3.1: Create analog input objects
     for result in analog_input_object_list:
         if _debug:
             _log.debug("    - creating: %r", result['object_name'])
+
+        # Create analog input BACnet object with properties from database
         pro_object = AnalogInputObject(
             objectIdentifier=("analogInput", result['object_identifier']),
             objectName=result['object_name'],
             presentValue=result['present_value'],
             description=result['description'],
-            statusFlags=[int(result['status_flags'][0]),
-                         int(result['status_flags'][1]),
-                         int(result['status_flags'][2]),
-                         int(result['status_flags'][3])],
+            statusFlags=[int(result['status_flags'][0]),  # In Alarm
+                         int(result['status_flags'][1]),  # Fault
+                         int(result['status_flags'][2]),  # Overridden
+                         int(result['status_flags'][3])], # Out of Service
             eventState=result['event_state'],
             outOfService=result['out_of_service'],
             units=result['units'],
             covIncrement=result['cov_increment'],
         )
+        # Add object to BACnet application and global object list
         pro_application.add_object(pro_object)
         object_list.append(pro_object)
         if _debug:
             _log.debug("    - created: %r", result['object_name'])
 
-    # step 3.2
+    # Step 3.2: Create analog output objects
     for result in analog_output_object_list:
         if _debug:
             _log.debug("    - creating: %r", result['object_name'])
+
+        # Note: Priority array functionality is commented out but available for future use
         # priority_array = PriorityArray()
         # for i in range(16):
         #     priority_array.append(PriorityValue(Integer(i)))
+
+        # Create analog output BACnet object with properties from database
         pro_object = AnalogOutputObject(
             objectIdentifier=("analogOutput", result['object_identifier']),
             objectName=result['object_name'],
             presentValue=result['present_value'],
             description=result['description'],
-            statusFlags=[int(result['status_flags'][0]),
-                         int(result['status_flags'][1]),
-                         int(result['status_flags'][2]),
-                         int(result['status_flags'][3])],
+            statusFlags=[int(result['status_flags'][0]),  # In Alarm
+                         int(result['status_flags'][1]),  # Fault
+                         int(result['status_flags'][2]),  # Overridden
+                         int(result['status_flags'][3])], # Out of Service
             eventState=result['event_state'],
             outOfService=result['out_of_service'],
             units=result['units'],
-            # priorityArray=priority_array,
+            # priorityArray=priority_array,  # Priority array for command priority
             relinquishDefault=result['relinquish_default'],
-            # currentCommandPriority=PriorityValue(Integer(8)),
+            # currentCommandPriority=PriorityValue(Integer(8)),  # Current command priority
             covIncrement=result['cov_increment'],
         )
+        # Add object to BACnet application and global object list
         pro_application.add_object(pro_object)
         object_list.append(pro_object)
         if _debug:
             _log.debug("    - created: %r", result['object_name'])
 
-    # step 3.3
+    # Step 3.3: Create analog value objects
     for result in analog_value_object_list:
         if _debug:
             _log.debug("    - creating: %r", result['object_name'])
+
+        # Create analog value BACnet object with properties from database
         pro_object = AnalogValueObject(
             objectIdentifier=("analogValue", result['object_identifier']),
             objectName=result['object_name'],
             presentValue=result['present_value'],
             description=result['description'],
-            statusFlags=[int(result['status_flags'][0]),
-                         int(result['status_flags'][1]),
-                         int(result['status_flags'][2]),
-                         int(result['status_flags'][3])],
+            statusFlags=[int(result['status_flags'][0]),  # In Alarm
+                         int(result['status_flags'][1]),  # Fault
+                         int(result['status_flags'][2]),  # Overridden
+                         int(result['status_flags'][3])], # Out of Service
             eventState=result['event_state'],
             outOfService=result['out_of_service'],
             units=result['units'],
             covIncrement=result['cov_increment'],
         )
+        # Add object to BACnet application and global object list
         pro_application.add_object(pro_object)
         object_list.append(pro_object)
         if _debug:
             _log.debug("    - created: %r", result['object_name'])
 
-    # step 3.4
+    # Step 3.4: Create binary input objects
     for result in binary_input_object_list:
         if _debug:
             _log.debug("    - creating: %r", result['object_name'])
+
+        # Create binary input BACnet object with properties from database
         pro_object = BinaryInputObject(
             objectIdentifier=("binaryInput", result['object_identifier']),
             objectName=result['object_name'],
             presentValue=result['present_value'],
             description=result['description'],
-            statusFlags=[int(result['status_flags'][0]),
-                         int(result['status_flags'][1]),
-                         int(result['status_flags'][2]),
-                         int(result['status_flags'][3])],
+            statusFlags=[int(result['status_flags'][0]),  # In Alarm
+                         int(result['status_flags'][1]),  # Fault
+                         int(result['status_flags'][2]),  # Overridden
+                         int(result['status_flags'][3])], # Out of Service
             eventState=result['event_state'],
             outOfService=result['out_of_service'],
-            polarity=result['polarity'],
+            polarity=result['polarity'],  # Normal or Reverse polarity
         )
+        # Add object to BACnet application and global object list
         pro_application.add_object(pro_object)
         object_list.append(pro_object)
         if _debug:
             _log.debug("    - created: %r", result['object_name'])
 
-    # step 3.5
+    # Step 3.5: Create binary output objects
     for result in binary_output_object_list:
         if _debug:
             _log.debug("    - creating: %r", result['object_name'])
+
+        # Create binary output BACnet object with properties from database
         pro_object = BinaryOutputObject(
             objectIdentifier=("binaryOutput", result['object_identifier']),
             objectName=result['object_name'],
             presentValue=result['present_value'],
             description=result['description'],
-            statusFlags=[int(result['status_flags'][0]),
-                         int(result['status_flags'][1]),
-                         int(result['status_flags'][2]),
-                         int(result['status_flags'][3])],
+            statusFlags=[int(result['status_flags'][0]),  # In Alarm
+                         int(result['status_flags'][1]),  # Fault
+                         int(result['status_flags'][2]),  # Overridden
+                         int(result['status_flags'][3])], # Out of Service
             eventState=result['event_state'],
             outOfService=result['out_of_service'],
-            polarity=result['polarity'],
+            polarity=result['polarity'],  # Normal or Reverse polarity
             relinquishDefault=result['relinquish_default'],
-            # currentCommandPriority=result['current_command_priority'],
+            # currentCommandPriority=result['current_command_priority'],  # Command priority
         )
+        # Add object to BACnet application and global object list
         pro_application.add_object(pro_object)
         object_list.append(pro_object)
         if _debug:
             _log.debug("    - created: %r", result['object_name'])
 
-    # step 3.6
+    # Step 3.6: Create binary value objects
     for result in binary_value_object_list:
         if _debug:
             _log.debug("    - creating: %r", result['object_name'])
+
+        # Create binary value BACnet object with properties from database
         pro_object = BinaryValueObject(
             objectIdentifier=("binaryValue", result['object_identifier']),
             objectName=result['object_name'],
             presentValue=result['present_value'],
             description=result['description'],
-            statusFlags=[int(result['status_flags'][0]),
-                         int(result['status_flags'][1]),
-                         int(result['status_flags'][2]),
-                         int(result['status_flags'][3])],
+            statusFlags=[int(result['status_flags'][0]),  # In Alarm
+                         int(result['status_flags'][1]),  # Fault
+                         int(result['status_flags'][2]),  # Overridden
+                         int(result['status_flags'][3])], # Out of Service
             eventState=result['event_state'],
             outOfService=result['out_of_service'],
         )
+        # Add object to BACnet application and global object list
         pro_application.add_object(pro_object)
         object_list.append(pro_object)
         if _debug:
             _log.debug("    - created: %r", result['object_name'])
 
-    # step 3.7
+    # Step 3.7: Create multi-state input objects
     for result in multi_state_input_object_list:
         if _debug:
             _log.debug("    - creating: %r", result['object_name'])
+
+        # Create multi-state input BACnet object with properties from database
         pro_object = MultiStateInputObject(
             objectIdentifier=("multiStateInput", result['object_identifier']),
             objectName=result['object_name'],
             presentValue=result['present_value'],
             description=result['description'],
-            statusFlags=[int(result['status_flags'][0]),
-                         int(result['status_flags'][1]),
-                         int(result['status_flags'][2]),
-                         int(result['status_flags'][3])],
+            statusFlags=[int(result['status_flags'][0]),  # In Alarm
+                         int(result['status_flags'][1]),  # Fault
+                         int(result['status_flags'][2]),  # Overridden
+                         int(result['status_flags'][3])], # Out of Service
             eventState=result['event_state'],
             outOfService=result['out_of_service'],
             numberOfStates=result['number_of_states'],
-            stateText=result['state_text'],
+            stateText=result['state_text'],  # Array of state text descriptions
         )
+        # Add object to BACnet application and global object list
         pro_application.add_object(pro_object)
         object_list.append(pro_object)
         if _debug:
             _log.debug("    - created: %r", result['object_name'])
 
-    # step 3.8
+    # Step 3.8: Create multi-state output objects
     for result in multi_state_output_object_list:
         if _debug:
             _log.debug("    - creating: %r", result['object_name'])
+
+        # Create multi-state output BACnet object with properties from database
         pro_object = MultiStateOutputObject(
             objectIdentifier=("multiStateOutput", result['object_identifier']),
             objectName=result['object_name'],
             presentValue=result['present_value'],
             description=result['description'],
-            statusFlags=[int(result['status_flags'][0]),
-                         int(result['status_flags'][1]),
-                         int(result['status_flags'][2]),
-                         int(result['status_flags'][3])],
+            statusFlags=[int(result['status_flags'][0]),  # In Alarm
+                         int(result['status_flags'][1]),  # Fault
+                         int(result['status_flags'][2]),  # Overridden
+                         int(result['status_flags'][3])], # Out of Service
             eventState=result['event_state'],
             outOfService=result['out_of_service'],
             numberOfStates=result['number_of_states'],
-            stateText=result['state_text'],
+            stateText=result['state_text'],  # Array of state text descriptions
             relinquishDefault=result['relinquish_default'],
-            # currentCommandPriority=result['current_command_priority'],
+            # currentCommandPriority=result['current_command_priority'],  # Command priority
         )
+        # Add object to BACnet application and global object list
         pro_application.add_object(pro_object)
         object_list.append(pro_object)
         if _debug:
             _log.debug("    - created: %r", result['object_name'])
 
-    # step 3.9
+    # Step 3.9: Create multi-state value objects
     for result in multi_state_value_object_list:
         if _debug:
             _log.debug("    - creating: %r", result['object_name'])
+
+        # Create multi-state value BACnet object with properties from database
         pro_object = MultiStateValueObject(
             objectIdentifier=("multiStateValue", result['object_identifier']),
             objectName=result['object_name'],
             presentValue=result['present_value'],
             description=result['description'],
-            statusFlags=[int(result['status_flags'][0]),
-                         int(result['status_flags'][1]),
-                         int(result['status_flags'][2]),
-                         int(result['status_flags'][3])],
+            statusFlags=[int(result['status_flags'][0]),  # In Alarm
+                         int(result['status_flags'][1]),  # Fault
+                         int(result['status_flags'][2]),  # Overridden
+                         int(result['status_flags'][3])], # Out of Service
             eventState=result['event_state'],
             outOfService=result['out_of_service'],
             numberOfStates=result['number_of_states'],
-            stateText=result['state_text'],
+            stateText=result['state_text'],  # Array of state text descriptions
         )
+        # Add object to BACnet application and global object list
         pro_application.add_object(pro_object)
         object_list.append(pro_object)
         if _debug:
@@ -1188,7 +1333,10 @@ def main():
     ####################################################################################################################
     # STEP4: Install tasks
     ####################################################################################################################
+    # Install persistence task to save writable properties to database
     Persistence(settings.PERSISTENCE_INTERVAL).install_task()
+
+    # Install refreshing task to update readable properties from database
     Refreshing(settings.REFRESHING_INTERVAL).install_task()
 
     ####################################################################################################################
@@ -1198,6 +1346,7 @@ def main():
     if _debug:
         _log.debug("running")
 
+    # Start the BACnet server - this blocks until the server is stopped
     run()
 
     if _debug:
@@ -1205,4 +1354,5 @@ def main():
 
 
 if __name__ == "__main__":
+    # Entry point - run the main function when script is executed directly
     main()

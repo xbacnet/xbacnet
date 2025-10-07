@@ -1,7 +1,7 @@
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">xBACnet v1.0.0</h1>
 <h4 align="center">把任何数据发布为BACnet</h4>
 
-[简体中文](./README_CN.md) | [English](./README.md)
+[简体中文](./README_CN.md) | [English](./README.md) | [Français](./README_FR.md) | [Español](./README_ES.md) | [Русский](./README_RU.md) | [Português](./README_PT.md) | [हिन्दी](./README_HI.md) | [Bahasa Indonesia](./README_ID.md) | [Bahasa Melayu](./README_MS.md) | [Tiếng Việt](./README_VI.md) | [Türkçe](./README_TR.md) | [العربية](./README_AR.md)
 
 ## xBACnet 介绍
 
@@ -11,7 +11,7 @@ xBACnet把任何数据发布为BACnet!
 支持的服务有Who-Is、I-Am用于设备绑定，读写属性，读写多属性和值变化订阅。
 
 
-## 前提  
+## 前提
 MySQL数据库
 Python (3.4 3.5 3.6 3.7 3.8 3.9 3.10)
 
@@ -53,7 +53,7 @@ $ sudo ufw allow 47808
 ```
 
 
-### 示例config.ini 
+### 示例config.ini
 ```
 [BACpypes]
 objectName: xBACnet Server
