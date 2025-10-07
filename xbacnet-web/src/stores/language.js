@@ -6,6 +6,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { availableLanguages } from '@/i18n'
 
 export const useLanguageStore = defineStore('language', () => {
   // State
@@ -25,11 +26,14 @@ export const useLanguageStore = defineStore('language', () => {
     }
   }
   
+  // Initialize language from localStorage
+  function initLanguage() {
+    const savedLanguage = localStorage.getItem('language') || 'en'
+    setLanguage(savedLanguage)
+  }
+  
   function getAvailableLanguages() {
-    return [
-      { code: 'en', name: 'English', nativeName: 'English' },
-      { code: 'zh-CN', name: 'Chinese', nativeName: '中文' }
-    ]
+    return availableLanguages
   }
   
   return {
@@ -38,6 +42,7 @@ export const useLanguageStore = defineStore('language', () => {
     
     // Actions
     setLanguage,
-    getAvailableLanguages
+    getAvailableLanguages,
+    initLanguage
   }
 })

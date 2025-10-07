@@ -20,6 +20,9 @@
 
     <!-- Right side -->
     <div class="header-right">
+      <!-- Language switcher -->
+      <LanguageSwitcher />
+
       <!-- Theme toggle -->
       <el-button
         type="text"
@@ -65,6 +68,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useAppStore } from '@/stores/app'
 import { useAuthStore } from '@/stores/auth'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import LanguageSwitcher from './LanguageSwitcher.vue'
 
 const route = useRoute()
 const router = useRouter()

@@ -1,7 +1,7 @@
 <template>
   <el-dropdown @command="handleLanguageChange" trigger="click">
     <el-button type="text" class="language-switcher">
-      <el-icon><Setting /></el-icon>
+      <span class="flag">{{ currentLanguageFlag }}</span>
       <span class="language-text">{{ currentLanguageName }}</span>
       <el-icon class="el-icon--right"><ArrowDown /></el-icon>
     </el-button>
@@ -13,7 +13,8 @@
           :command="lang.code"
           :class="{ 'is-active': currentLanguage === lang.code }"
         >
-          {{ lang.nativeName }}
+          <span class="flag">{{ lang.flag }}</span>
+          <span class="language-name">{{ lang.nativeName }}</span>
         </el-dropdown-item>
       </el-dropdown-menu>
     </template>
@@ -27,6 +28,7 @@ import { useI18n } from 'vue-i18n'
 import { Setting, ArrowDown } from '@element-plus/icons-vue'
 
 const languageStore = useLanguageStore()
+const { locale } = useI18n()
 
 const currentLanguage = computed(() => languageStore.currentLanguage)
 const availableLanguages = computed(() => languageStore.getAvailableLanguages())
@@ -36,8 +38,14 @@ const currentLanguageName = computed(() => {
   return lang ? lang.nativeName : 'English'
 })
 
+const currentLanguageFlag = computed(() => {
+  const lang = availableLanguages.value.find(l => l.code === currentLanguage.value)
+  return lang ? lang.flag : '🇺🇸'
+})
+
 function handleLanguageChange(langCode) {
   languageStore.setLanguage(langCode)
+  locale.value = langCode
 }
 </script>
 
@@ -54,13 +62,32 @@ function handleLanguageChange(langCode) {
     background-color: var(--main-bg);
   }
 
+  .flag {
+    font-size: 16px;
+    margin-right: 6px;
+  }
+
   .language-text {
     font-size: 14px;
   }
 }
 
-:deep(.el-dropdown-menu__item.is-active) {
-  color: var(--primary-color);
-  background-color: var(--main-bg);
+:deep(.el-dropdown-menu__item) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  
+  .flag {
+    font-size: 16px;
+  }
+  
+  .language-name {
+    font-size: 14px;
+  }
+  
+  &.is-active {
+    color: var(--primary-color);
+    background-color: var(--main-bg);
+  }
 }
 </style>

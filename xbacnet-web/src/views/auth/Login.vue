@@ -7,7 +7,7 @@
           <el-icon :size="48" color="#409eff"><Setting /></el-icon>
         </div>
         <h1>XBACnet</h1>
-        <p>Web Management Interface</p>
+        <p>{{ $t('app.description') }}</p>
       </div>
       
       <!-- Login Form -->
@@ -21,7 +21,7 @@
         <el-form-item prop="name">
           <el-input
             v-model="loginForm.name"
-            placeholder="Username"
+            :placeholder="$t('auth.username')"
             size="large"
             :prefix-icon="User"
             clearable
@@ -32,7 +32,7 @@
           <el-input
             v-model="loginForm.password"
             type="password"
-            placeholder="Password"
+            :placeholder="$t('auth.password')"
             size="large"
             :prefix-icon="Lock"
             show-password
@@ -49,14 +49,14 @@
             @click="handleLogin"
             class="login-button"
           >
-            {{ loading ? 'Logging in...' : 'Login' }}
+            {{ loading ? $t('common.loading') : $t('auth.login') }}
           </el-button>
         </el-form-item>
       </el-form>
       
       <!-- Footer -->
       <div class="login-footer">
-        <p>Default credentials: administrator / !BACnetPro1</p>
+        <p>{{ $t('auth.defaultCredentials') }}</p>
       </div>
     </div>
   </div>
@@ -104,14 +104,14 @@ async function handleLogin() {
     const result = await authStore.login(loginForm)
     
     if (result.success) {
-      ElMessage.success('Login successful')
+      ElMessage.success($t('auth.loginSuccess'))
       router.push('/dashboard')
     } else {
-      ElMessage.error(result.error || 'Login failed')
+      ElMessage.error(result.error || $t('auth.loginFailed'))
     }
   } catch (error) {
     console.error('Login error:', error)
-    ElMessage.error('Login failed')
+    ElMessage.error($t('auth.loginFailed'))
   } finally {
     loading.value = false
   }

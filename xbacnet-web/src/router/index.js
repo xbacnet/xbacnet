@@ -22,6 +22,7 @@ import MultiStateOutputs from '@/views/objects/MultiStateOutputs.vue'
 import MultiStateValues from '@/views/objects/MultiStateValues.vue'
 import UserManagement from '@/views/users/UserManagement.vue'
 import Login from '@/views/auth/Login.vue'
+import TestI18n from '@/views/TestI18n.vue'
 
 const routes = [
   {
@@ -133,6 +134,15 @@ const routes = [
         meta: {
           title: 'User Management',
           icon: 'User'
+        }
+      },
+      {
+        path: 'test-i18n',
+        name: 'TestI18n',
+        component: TestI18n,
+        meta: {
+          title: 'Test I18n',
+          icon: 'Setting'
         }
       }
     ]

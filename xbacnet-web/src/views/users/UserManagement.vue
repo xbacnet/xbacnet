@@ -28,10 +28,10 @@
         style="width: 100%"
       >
         <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="name" label="Username" width="150" />
-        <el-table-column prop="display_name" label="Display Name" width="150" />
-        <el-table-column prop="email" label="Email" min-width="200" />
-        <el-table-column prop="is_admin" label="Admin" width="100">
+        <el-table-column prop="name" :label="$t('users.username')" width="150" />
+        <el-table-column prop="display_name" :label="$t('users.displayName')" width="150" />
+        <el-table-column prop="email" :label="$t('users.email')" min-width="200" />
+        <el-table-column prop="is_admin" :label="$t('users.admin')" width="100">
           <template #default="{ row }">
             <el-tag :type="row.is_admin ? 'danger' : 'success'">
               {{ row.is_admin ? 'Yes' : 'No' }}
@@ -39,7 +39,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="uuid" label="UUID" min-width="250" show-overflow-tooltip />
-        <el-table-column label="Actions" width="200" fixed="right">
+        <el-table-column :label="$t('common.actions')" width="200" fixed="right">
           <template #default="{ row }">
             <el-button size="small" @click="editUser(row)">
               <el-icon><Edit /></el-icon>
@@ -80,7 +80,7 @@
         :rules="formRules"
         label-width="120px"
       >
-        <el-form-item label="Username" prop="name">
+        <el-form-item :label="$t('users.username')" prop="name">
           <el-input 
             v-model="formData.name" 
             :disabled="isEdit"
@@ -88,15 +88,15 @@
           />
         </el-form-item>
         
-        <el-form-item label="Display Name" prop="display_name">
+        <el-form-item :label="$t('users.displayName')" prop="display_name">
           <el-input v-model="formData.display_name" placeholder="Enter display name" />
         </el-form-item>
         
-        <el-form-item label="Email" prop="email">
+        <el-form-item :label="$t('users.email')" prop="email">
           <el-input v-model="formData.email" type="email" placeholder="Enter email address" />
         </el-form-item>
         
-        <el-form-item label="Password" prop="password" v-if="!isEdit">
+        <el-form-item :label="$t('users.password')" prop="password" v-if="!isEdit">
           <el-input 
             v-model="formData.password" 
             type="password" 
@@ -105,7 +105,7 @@
           />
         </el-form-item>
         
-        <el-form-item label="New Password" prop="new_password" v-if="isEdit">
+        <el-form-item :label="$t('users.newPassword')" prop="new_password" v-if="isEdit">
           <el-input 
             v-model="formData.new_password" 
             type="password" 
@@ -114,7 +114,7 @@
           />
         </el-form-item>
         
-        <el-form-item label="Admin" prop="is_admin">
+        <el-form-item :label="$t('users.admin')" prop="is_admin">
           <el-switch v-model="formData.is_admin" />
         </el-form-item>
       </el-form>
