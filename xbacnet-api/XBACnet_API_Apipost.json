@@ -1,0 +1,999 @@
+{
+  "info": {
+    "name": "XBACnet API",
+    "description": "REST API for managing BACnet objects in XBACnet system",
+    "version": "1.0.0",
+    "contact": {
+      "name": "XBACnet Team",
+      "url": "https://github.com/xbacnet/xbacnet"
+    }
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000",
+      "description": "API base URL"
+    }
+  ],
+  "item": [
+    {
+      "name": "API Information",
+      "item": [
+        {
+          "name": "Get API Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": ["{{baseUrl}}"],
+              "path": [""]
+            },
+            "description": "Get API information and available endpoints"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Health & Statistics",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "health"]
+            },
+            "description": "Check API and database health status"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "stats"]
+            },
+            "description": "Get statistics about objects in database"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Analog Input Objects",
+      "item": [
+        {
+          "name": "List Analog Inputs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/analog-inputs?page=1&page_size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analog-inputs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number (1-based)"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10",
+                  "description": "Number of items per page"
+                }
+              ]
+            },
+            "description": "Get paginated list of analog input objects"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Analog Input",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"object_identifier\": 10001,\n  \"object_name\": \"Temperature_Sensor_1\",\n  \"present_value\": 25.5,\n  \"description\": \"Room temperature sensor\",\n  \"status_flags\": \"0000\",\n  \"event_state\": \"normal\",\n  \"out_of_service\": false,\n  \"units\": \"degreesCelsius\",\n  \"cov_increment\": 0.1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/analog-inputs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analog-inputs"]
+            },
+            "description": "Create a new analog input object"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Analog Input by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/analog-inputs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analog-inputs", "1"]
+            },
+            "description": "Get analog input object by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Analog Input",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"present_value\": 26.0,\n  \"description\": \"Updated temperature sensor\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/analog-inputs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analog-inputs", "1"]
+            },
+            "description": "Update analog input object"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Analog Input",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/analog-inputs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analog-inputs", "1"]
+            },
+            "description": "Delete analog input object"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Analog Output Objects",
+      "item": [
+        {
+          "name": "List Analog Outputs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/analog-outputs?page=1&page_size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analog-outputs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get paginated list of analog output objects"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Analog Output",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"object_identifier\": 20001,\n  \"object_name\": \"Temperature_Setpoint_1\",\n  \"present_value\": 22.0,\n  \"description\": \"Temperature setpoint controller\",\n  \"status_flags\": \"0000\",\n  \"event_state\": \"normal\",\n  \"out_of_service\": false,\n  \"units\": \"degreesCelsius\",\n  \"relinquish_default\": 20.0,\n  \"current_command_priority\": null,\n  \"cov_increment\": 0.1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/analog-outputs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analog-outputs"]
+            },
+            "description": "Create a new analog output object"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Analog Output by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/analog-outputs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analog-outputs", "1"]
+            },
+            "description": "Get analog output object by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Analog Output",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"present_value\": 24.0,\n  \"description\": \"Updated temperature setpoint\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/analog-outputs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analog-outputs", "1"]
+            },
+            "description": "Update analog output object"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Analog Output",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/analog-outputs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analog-outputs", "1"]
+            },
+            "description": "Delete analog output object"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Binary Input Objects",
+      "item": [
+        {
+          "name": "List Binary Inputs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/binary-inputs?page=1&page_size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "binary-inputs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get paginated list of binary input objects"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Binary Input",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"object_identifier\": 40001,\n  \"object_name\": \"Door_Sensor_1\",\n  \"present_value\": \"active\",\n  \"description\": \"Door open/close sensor\",\n  \"status_flags\": \"0000\",\n  \"event_state\": \"normal\",\n  \"out_of_service\": false,\n  \"polarity\": \"normal\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/binary-inputs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "binary-inputs"]
+            },
+            "description": "Create a new binary input object"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Binary Input by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/binary-inputs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "binary-inputs", "1"]
+            },
+            "description": "Get binary input object by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Binary Input",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"present_value\": \"inactive\",\n  \"description\": \"Updated door sensor\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/binary-inputs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "binary-inputs", "1"]
+            },
+            "description": "Update binary input object"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Binary Input",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/binary-inputs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "binary-inputs", "1"]
+            },
+            "description": "Delete binary input object"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Binary Output Objects",
+      "item": [
+        {
+          "name": "List Binary Outputs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/binary-outputs?page=1&page_size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "binary-outputs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get paginated list of binary output objects"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Binary Output",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"object_identifier\": 50001,\n  \"object_name\": \"Light_Control_1\",\n  \"present_value\": \"active\",\n  \"description\": \"Light switch control\",\n  \"status_flags\": \"0000\",\n  \"event_state\": \"normal\",\n  \"out_of_service\": false,\n  \"polarity\": \"normal\",\n  \"relinquish_default\": \"inactive\",\n  \"current_command_priority\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/binary-outputs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "binary-outputs"]
+            },
+            "description": "Create a new binary output object"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Binary Output by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/binary-outputs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "binary-outputs", "1"]
+            },
+            "description": "Get binary output object by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Binary Output",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"present_value\": \"inactive\",\n  \"description\": \"Updated light control\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/binary-outputs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "binary-outputs", "1"]
+            },
+            "description": "Update binary output object"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Binary Output",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/binary-outputs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "binary-outputs", "1"]
+            },
+            "description": "Delete binary output object"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Multi-state Input Objects",
+      "item": [
+        {
+          "name": "List Multi-state Inputs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/multi-state-inputs?page=1&page_size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "multi-state-inputs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get paginated list of multi-state input objects"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Multi-state Input",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"object_identifier\": 70001,\n  \"object_name\": \"HVAC_Mode_1\",\n  \"present_value\": 1,\n  \"description\": \"HVAC system mode\",\n  \"status_flags\": \"0000\",\n  \"event_state\": \"normal\",\n  \"out_of_service\": false,\n  \"number_of_states\": 4,\n  \"state_text\": [\"Off\", \"Heat\", \"Cool\", \"Auto\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/multi-state-inputs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "multi-state-inputs"]
+            },
+            "description": "Create a new multi-state input object"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Multi-state Input by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/multi-state-inputs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "multi-state-inputs", "1"]
+            },
+            "description": "Get multi-state input object by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Multi-state Input",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"present_value\": 2,\n  \"description\": \"Updated HVAC mode\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/multi-state-inputs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "multi-state-inputs", "1"]
+            },
+            "description": "Update multi-state input object"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Multi-state Input",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/multi-state-inputs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "multi-state-inputs", "1"]
+            },
+            "description": "Delete multi-state input object"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Multi-state Output Objects",
+      "item": [
+        {
+          "name": "List Multi-state Outputs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/multi-state-outputs?page=1&page_size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "multi-state-outputs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get paginated list of multi-state output objects"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Multi-state Output",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"object_identifier\": 80001,\n  \"object_name\": \"Fan_Speed_Control_1\",\n  \"present_value\": 2,\n  \"description\": \"Fan speed control\",\n  \"status_flags\": \"0000\",\n  \"event_state\": \"normal\",\n  \"out_of_service\": false,\n  \"number_of_states\": 3,\n  \"state_text\": [\"Low\", \"Medium\", \"High\"],\n  \"relinquish_default\": 1,\n  \"current_command_priority\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/multi-state-outputs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "multi-state-outputs"]
+            },
+            "description": "Create a new multi-state output object"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Multi-state Output by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/multi-state-outputs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "multi-state-outputs", "1"]
+            },
+            "description": "Get multi-state output object by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Multi-state Output",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"present_value\": 3,\n  \"description\": \"Updated fan speed control\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/multi-state-outputs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "multi-state-outputs", "1"]
+            },
+            "description": "Update multi-state output object"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Multi-state Output",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/multi-state-outputs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "multi-state-outputs", "1"]
+            },
+            "description": "Delete multi-state output object"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Analog Value Objects",
+      "item": [
+        {
+          "name": "List Analog Values",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/analog-values?page=1&page_size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analog-values"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get paginated list of analog value objects"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Analog Value",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"object_identifier\": 30001,\n  \"object_name\": \"Calculated_Temperature_1\",\n  \"present_value\": 23.5,\n  \"description\": \"Calculated temperature value\",\n  \"status_flags\": \"0000\",\n  \"event_state\": \"normal\",\n  \"out_of_service\": false,\n  \"units\": \"degreesCelsius\",\n  \"cov_increment\": 0.1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/analog-values",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analog-values"]
+            },
+            "description": "Create a new analog value object"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Binary Value Objects",
+      "item": [
+        {
+          "name": "List Binary Values",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/binary-values?page=1&page_size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "binary-values"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get paginated list of binary value objects"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Binary Value",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"object_identifier\": 60001,\n  \"object_name\": \"System_Status_1\",\n  \"present_value\": \"active\",\n  \"description\": \"System status indicator\",\n  \"status_flags\": \"0000\",\n  \"event_state\": \"normal\",\n  \"out_of_service\": false,\n  \"polarity\": \"normal\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/binary-values",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "binary-values"]
+            },
+            "description": "Create a new binary value object"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Multi-state Value Objects",
+      "item": [
+        {
+          "name": "List Multi-state Values",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/multi-state-values?page=1&page_size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "multi-state-values"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get paginated list of multi-state value objects"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Multi-state Value",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"object_identifier\": 90001,\n  \"object_name\": \"System_Mode_1\",\n  \"present_value\": 1,\n  \"description\": \"System operating mode\",\n  \"status_flags\": \"0000\",\n  \"event_state\": \"normal\",\n  \"out_of_service\": false,\n  \"number_of_states\": 3,\n  \"state_text\": [\"Manual\", \"Automatic\", \"Maintenance\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/multi-state-values",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "multi-state-values"]
+            },
+            "description": "Create a new multi-state value object"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users?page=1&page_size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number (1-based)"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10",
+                  "description": "Number of items per page"
+                }
+              ]
+            },
+            "description": "Get paginated list of users"
+          },
+          "response": []
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"john_doe\",\n  \"display_name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"securepassword123\",\n  \"is_admin\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"]
+            },
+            "description": "Create a new user"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "1"]
+            },
+            "description": "Get user by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"display_name\": \"John Smith\",\n  \"email\": \"john.smith@example.com\",\n  \"is_admin\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "1"]
+            },
+            "description": "Update user information"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "1"]
+            },
+            "description": "Delete user"
+          },
+          "response": []
+        },
+        {
+          "name": "User Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"john_doe\",\n  \"password\": \"securepassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "login"]
+            },
+            "description": "Authenticate user with username and password"
+          },
+          "response": []
+        },
+        {
+          "name": "User Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "logout"]
+            },
+            "description": "Logout user by ID or username"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

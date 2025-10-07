@@ -1,0 +1,25 @@
+# XBACnet API Dependencies
+# Compatible with Python 3.10+
+
+# Web framework and server
+falcon==3.1.1
+gunicorn==21.2.0
+
+# Database connectivity
+mysql-connector-python==8.2.0
+
+# JSON handling and validation
+jsonschema==4.20.0
+
+# CORS support for web applications
+falcon-cors==1.1.7
+
+# Environment variable management
+python-dotenv==1.0.0
+
+# HTTP client for testing
+requests==2.31.0
+
+# Development dependencies
+pytest==7.4.3
+pytest-falcon==0.5.0
