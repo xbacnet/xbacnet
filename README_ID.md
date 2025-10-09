@@ -1,7 +1,7 @@
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">xBACnet v1.0.0</h1>
 <h4 align="center">Publikasikan data apa pun sebagai BACnet</h4>
 
-[简体中文](./README_CN.md) | [English](./README.md) | Français | Español | Русский | Português | हिन्दी | Bahasa Indonesia
+[简体中文](./README_CN.md) | [English](./README.md) | [Français](./README_FR.md) | [Español](./README_ES.md) | [Русский](./README_RU.md) | [Português](./README_PT.md) | [हिन्दी](./README_HI.md) | [Bahasa Indonesia](./README_ID.md) | [Bahasa Melayu](./README_MS.md) | [Tiếng Việt](./README_VI.md) | [Türkçe](./README_TR.md) | [العربية](./README_AR.md)
 
 ## Pengenalan xBACnet
 
@@ -90,16 +90,90 @@ sudo systemctl enable xbacnet-server.service
 sudo systemctl start xbacnet-server.service
 ```
 
-* Cara menggunakan
+## Cara menggunakan
 Tambahkan objek dalam database, edit properti objek, tulis data yang akan dipublikasikan ke present_value
 
-## Rencana pengembangan
+## Antarmuka Manajemen Web
 
-1. Tambahkan log
-2. Muat ulang otomatis daftar objek
-3. Tambahkan penanganan pengecualian
-4. Tambahkan API
-5. Tambahkan antarmuka web
+xBACnet sekarang menyertakan antarmuka manajemen web modern untuk memudahkan konfigurasi dan pemantauan objek BACnet.
+
+### Fitur
+
+#### 🔐 Autentikasi Pengguna
+- Sistem login aman dengan kontrol akses berbasis peran
+- Kredensial default: `administrator` / `!BACnetPro1`
+
+![Halaman Login](images/login.png)
+
+#### 📊 Dashboard
+- Ringkasan sistem dengan statistik real-time
+- Grafik interaktif menampilkan distribusi objek
+- Pemantauan status sistem
+- Log aktivitas terbaru
+
+![Dashboard](images/dashboard.png)
+
+#### 🏗️ Manajemen Objek BACnet
+Operasi CRUD lengkap untuk semua jenis objek BACnet:
+
+**Objek Analog**
+- **Input Analog**: Memantau nilai input analog dari sensor
+- **Output Analog**: Mengontrol perangkat output analog
+- **Nilai Analog**: Menyimpan dan mengelola nilai analog
+
+![Input Analog](images/analog-inputs.png)
+![Output Analog](images/analog-outputs.png)
+![Nilai Analog](images/analog-values.png)
+
+**Objek Biner**
+- **Input Biner**: Memantau status input biner (hidup/mati)
+- **Output Biner**: Mengontrol perangkat output biner
+- **Nilai Biner**: Menyimpan dan mengelola nilai biner
+
+![Input Biner](images/binary-inputs.png)
+![Output Biner](images/binary-outputs.png)
+![Nilai Biner](images/binary-values.png)
+
+**Objek Multi-state**
+- **Input Multi-state**: Memantau perangkat input multi-state
+- **Output Multi-state**: Mengontrol perangkat output multi-state
+- **Nilai Multi-state**: Menyimpan dan mengelola nilai multi-state
+
+![Input Multi-state](images/multi-state-inputs.png)
+![Output Multi-state](images/multi-state-outputs.png)
+![Nilai Multi-state](images/multi-state-values.png)
+
+#### 👥 Manajemen Pengguna
+- Membuat, mengedit, dan menghapus akun pengguna
+- Izin berbasis peran
+- Pelacakan aktivitas pengguna
+
+![Manajemen Pengguna](images/user-management.png)
+
+### Mulai Cepat
+
+1. **Mulai Server API**
+   ```bash
+   cd xbacnet-api
+   python run.py --port 8000
+   ```
+
+2. **Mulai Antarmuka Web**
+   ```bash
+   cd xbacnet-web
+   npm install
+   npm run dev
+   ```
+
+3. **Akses Antarmuka**
+   - Buka browser ke `http://localhost:3000`
+   - Login dengan: `administrator` / `!BACnetPro1`
+
+### Stack Teknologi
+- **Frontend**: Vue 3 + Element Plus + ECharts
+- **Backend**: Python Falcon REST API
+- **Database**: MySQL
+- **Autentikasi**: Keamanan berbasis JWT
 
 ## Grup WeChat
 

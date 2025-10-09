@@ -1,7 +1,7 @@
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">xBACnet v1.0.0</h1>
 <h4 align="center">Herhangi bir veriyi BACnet olarak yayınla</h4>
 
-[简体中文](./README_CN.md) | [English](./README.md) | Français | Español | Русский | Português | हिन्दी | Bahasa Indonesia | Bahasa Melayu | Tiếng Việt | Türkçe
+[简体中文](./README_CN.md) | [English](./README.md) | [Français](./README_FR.md) | [Español](./README_ES.md) | [Русский](./README_RU.md) | [Português](./README_PT.md) | [हिन्दी](./README_HI.md) | [Bahasa Indonesia](./README_ID.md) | [Bahasa Melayu](./README_MS.md) | [Tiếng Việt](./README_VI.md) | [Türkçe](./README_TR.md) | [العربية](./README_AR.md)
 
 ## xBACnet Giriş
 
@@ -90,16 +90,90 @@ sudo systemctl enable xbacnet-server.service
 sudo systemctl start xbacnet-server.service
 ```
 
-* Nasıl kullanılır
+## Nasıl kullanılır
 Veritabanına nesneler ekle, nesne özelliklerini düzenle, yayınlanacak verileri present_value'ya yaz
 
-## Geliştirme planı
+## Web Yönetim Arayüzü
 
-1. Günlük kayıtları ekle
-2. Nesne listesinin otomatik yeniden yüklenmesi
-3. İstisna işleme ekle
-4. API ekle
-5. Web arayüzü ekle
+xBACnet artık BACnet nesnelerinin kolay yapılandırması ve izlenmesi için modern bir web tabanlı yönetim arayüzü içeriyor.
+
+### Özellikler
+
+#### 🔐 Kullanıcı Kimlik Doğrulama
+- Rol tabanlı erişim kontrolü ile güvenli giriş sistemi
+- Varsayılan kimlik bilgileri: `administrator` / `!BACnetPro1`
+
+![Giriş Sayfası](images/login.png)
+
+#### 📊 Kontrol Paneli
+- Gerçek zamanlı istatistiklerle sistem genel bakışı
+- Nesne dağılımını gösteren etkileşimli grafikler
+- Sistem durumu izleme
+- Son aktivite günlükleri
+
+![Kontrol Paneli](images/dashboard.png)
+
+#### 🏗️ BACnet Nesne Yönetimi
+Tüm BACnet nesne türleri için tam CRUD işlemleri:
+
+**Analog Nesneler**
+- **Analog Girişler**: Sensörlerden analog giriş değerlerini izleme
+- **Analog Çıkışlar**: Analog çıkış cihazlarını kontrol etme
+- **Analog Değerler**: Analog değerleri saklama ve yönetme
+
+![Analog Girişler](images/analog-inputs.png)
+![Analog Çıkışlar](images/analog-outputs.png)
+![Analog Değerler](images/analog-values.png)
+
+**İkili Nesneler**
+- **İkili Girişler**: İkili giriş durumlarını izleme (açık/kapalı)
+- **İkili Çıkışlar**: İkili çıkış cihazlarını kontrol etme
+- **İkili Değerler**: İkili değerleri saklama ve yönetme
+
+![İkili Girişler](images/binary-inputs.png)
+![İkili Çıkışlar](images/binary-outputs.png)
+![İkili Değerler](images/binary-values.png)
+
+**Çok Durumlu Nesneler**
+- **Çok Durumlu Girişler**: Çok durumlu giriş cihazlarını izleme
+- **Çok Durumlu Çıkışlar**: Çok durumlu çıkış cihazlarını kontrol etme
+- **Çok Durumlu Değerler**: Çok durumlu değerleri saklama ve yönetme
+
+![Çok Durumlu Girişler](images/multi-state-inputs.png)
+![Çok Durumlu Çıkışlar](images/multi-state-outputs.png)
+![Çok Durumlu Değerler](images/multi-state-values.png)
+
+#### 👥 Kullanıcı Yönetimi
+- Kullanıcı hesapları oluşturma, düzenleme ve silme
+- Rol tabanlı izinler
+- Kullanıcı aktivite takibi
+
+![Kullanıcı Yönetimi](images/user-management.png)
+
+### Hızlı Başlangıç
+
+1. **API Sunucusunu Başlat**
+   ```bash
+   cd xbacnet-api
+   python run.py --port 8000
+   ```
+
+2. **Web Arayüzünü Başlat**
+   ```bash
+   cd xbacnet-web
+   npm install
+   npm run dev
+   ```
+
+3. **Arayüze Erişim**
+   - Tarayıcıyı `http://localhost:3000` adresinde aç
+   - Şununla giriş yap: `administrator` / `!BACnetPro1`
+
+### Teknoloji Yığını
+- **Frontend**: Vue 3 + Element Plus + ECharts
+- **Backend**: Python Falcon REST API
+- **Veritabanı**: MySQL
+- **Kimlik Doğrulama**: JWT tabanlı güvenlik
 
 ## WeChat Grubu
 

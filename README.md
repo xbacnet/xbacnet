@@ -95,12 +95,88 @@ sudo systemctl start xbacnet-server.service
 ## How to Use
 Add objects in the database, edit object properties, and write the data to be published into the presenter value
 
-## TODO
-1. Add logger
-2. Add auto reload object_list
-3. Add try...except to pro_application.add_object(pro_object)
-4. API Add REST API
-5. Add Web UI
+## Web Management Interface
+
+xBACnet now includes a modern web-based management interface for easy configuration and monitoring of BACnet objects.
+
+### Features
+
+#### 🔐 User Authentication
+- Secure login system with role-based access control
+- Default credentials: `administrator` / `!BACnetPro1`
+
+![Login Page](images/login.png)
+
+#### 📊 Dashboard
+- System overview with real-time statistics
+- Interactive charts showing object distribution
+- System status monitoring
+- Recent activity logs
+
+![Dashboard](images/dashboard.png)
+
+#### 🏗️ BACnet Object Management
+Complete CRUD operations for all BACnet object types:
+
+**Analog Objects**
+- **Analog Inputs**: Monitor analog input values from sensors
+- **Analog Outputs**: Control analog output devices
+- **Analog Values**: Store and manage analog values
+
+![Analog Inputs](images/analog-inputs.png)
+![Analog Outputs](images/analog-outputs.png)
+![Analog Values](images/analog-values.png)
+
+**Binary Objects**
+- **Binary Inputs**: Monitor binary input states (on/off)
+- **Binary Outputs**: Control binary output devices
+- **Binary Values**: Store and manage binary values
+
+![Binary Inputs](images/binary-inputs.png)
+![Binary Outputs](images/binary-outputs.png)
+![Binary Values](images/binary-values.png)
+
+**Multi-state Objects**
+- **Multi-state Inputs**: Monitor multi-state input devices
+- **Multi-state Outputs**: Control multi-state output devices
+- **Multi-state Values**: Store and manage multi-state values
+
+![Multi-state Inputs](images/multi-state-inputs.png)
+![Multi-state Outputs](images/multi-state-outputs.png)
+![Multi-state Values](images/multi-state-values.png)
+
+#### 👥 User Management
+- Create, edit, and delete user accounts
+- Role-based permissions
+- User activity tracking
+
+![User Management](images/user-management.png)
+
+### Quick Start
+
+1. **Start the API Server**
+   ```bash
+   cd xbacnet-api
+   python run.py --port 8000
+   ```
+
+2. **Start the Web Interface**
+   ```bash
+   cd xbacnet-web
+   npm install
+   npm run dev
+   ```
+
+3. **Access the Interface**
+   - Open browser to `http://localhost:3000`
+   - Login with: `administrator` / `!BACnetPro1`
+
+### Technology Stack
+- **Frontend**: Vue 3 + Element Plus + ECharts
+- **Backend**: Python Falcon REST API
+- **Database**: MySQL
+- **Authentication**: JWT-based security
+
 
 ## WeChat Group
 

@@ -28,7 +28,7 @@
       <el-sub-menu index="analog">
         <template #title>
           <el-icon><TrendCharts /></el-icon>
-          <span>Analog Objects</span>
+          <span>{{ $t('navigation.analogObjects') }}</span>
         </template>
         <el-menu-item index="/analog-inputs">
           <el-icon><DataLine /></el-icon>
@@ -48,19 +48,19 @@
       <el-sub-menu index="binary">
         <template #title>
           <el-icon><Switch /></el-icon>
-          <span>Binary Objects</span>
+          <span>{{ $t('navigation.binaryObjects') }}</span>
         </template>
         <el-menu-item index="/binary-inputs">
           <el-icon><Monitor /></el-icon>
-          <template #title>Binary Inputs</template>
+          <template #title>{{ $t('navigation.binaryInputs') }}</template>
         </el-menu-item>
         <el-menu-item index="/binary-outputs">
           <el-icon><Operation /></el-icon>
-          <template #title>Binary Outputs</template>
+          <template #title>{{ $t('navigation.binaryOutputs') }}</template>
         </el-menu-item>
         <el-menu-item index="/binary-values">
           <el-icon><Grid /></el-icon>
-          <template #title>Binary Values</template>
+          <template #title>{{ $t('navigation.binaryValues') }}</template>
         </el-menu-item>
       </el-sub-menu>
 
@@ -68,26 +68,26 @@
       <el-sub-menu index="multi-state">
         <template #title>
           <el-icon><Menu /></el-icon>
-          <span>Multi-state Objects</span>
+          <span>{{ $t('navigation.multistateObjects') }}</span>
         </template>
         <el-menu-item index="/multi-state-inputs">
           <el-icon><List /></el-icon>
-          <template #title>Multi-state Inputs</template>
+          <template #title>{{ $t('navigation.multistateInputs') }}</template>
         </el-menu-item>
         <el-menu-item index="/multi-state-outputs">
           <el-icon><Menu /></el-icon>
-          <template #title>Multi-state Outputs</template>
+          <template #title>{{ $t('navigation.multistateOutputs') }}</template>
         </el-menu-item>
         <el-menu-item index="/multi-state-values">
           <el-icon><Grid /></el-icon>
-          <template #title>Multi-state Values</template>
+          <template #title>{{ $t('navigation.multistateValues') }}</template>
         </el-menu-item>
       </el-sub-menu>
 
       <!-- User Management -->
       <el-menu-item index="/users">
         <el-icon><User /></el-icon>
-        <template #title>User Management</template>
+        <template #title>{{ $t('navigation.users') }}</template>
       </el-menu-item>
     </el-menu>
   </div>
@@ -97,9 +97,11 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAppStore } from '@/stores/app'
+import { useI18n } from 'vue-i18n'
 
 const route = useRoute()
 const appStore = useAppStore()
+const { t: $t } = useI18n()
 
 const isCollapsed = computed(() => appStore.sidebarCollapsed)
 const activeMenu = computed(() => route.path)

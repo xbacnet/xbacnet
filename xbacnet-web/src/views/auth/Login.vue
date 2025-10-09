@@ -9,7 +9,7 @@
         <h1>XBACnet</h1>
         <p>{{ $t('app.description') }}</p>
       </div>
-      
+
       <!-- Login Form -->
       <el-form
         ref="loginFormRef"
@@ -27,7 +27,7 @@
             clearable
           />
         </el-form-item>
-        
+
         <el-form-item prop="password">
           <el-input
             v-model="loginForm.password"
@@ -40,7 +40,7 @@
             @keyup.enter="handleLogin"
           />
         </el-form-item>
-        
+
         <el-form-item>
           <el-button
             type="primary"
@@ -53,7 +53,7 @@
           </el-button>
         </el-form-item>
       </el-form>
-      
+
       <!-- Footer -->
       <div class="login-footer">
         <p>{{ $t('auth.defaultCredentials') }}</p>
@@ -68,9 +68,11 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { ElMessage } from 'element-plus'
 import { User, Lock } from '@element-plus/icons-vue'
+import { useI18n } from 'vue-i18n'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const { t: $t } = useI18n()
 
 // Form data
 const loginForm = reactive({
@@ -94,15 +96,15 @@ const loginRules = {
 // Methods
 async function handleLogin() {
   if (!loginFormRef.value) return
-  
+
   try {
     const valid = await loginFormRef.value.validate()
     if (!valid) return
-    
+
     loading.value = true
-    
+
     const result = await authStore.login(loginForm)
-    
+
     if (result.success) {
       ElMessage.success($t('auth.loginSuccess'))
       router.push('/dashboard')
@@ -140,18 +142,18 @@ async function handleLogin() {
 .login-header {
   text-align: center;
   margin-bottom: 30px;
-  
+
   .logo {
     margin-bottom: 20px;
   }
-  
+
   h1 {
     font-size: 28px;
     font-weight: 600;
     color: #303133;
     margin-bottom: 8px;
   }
-  
+
   p {
     color: #909399;
     font-size: 14px;
@@ -162,7 +164,7 @@ async function handleLogin() {
   .el-form-item {
     margin-bottom: 20px;
   }
-  
+
   .login-button {
     width: 100%;
     height: 44px;
@@ -176,7 +178,7 @@ async function handleLogin() {
   margin-top: 20px;
   padding-top: 20px;
   border-top: 1px solid #e4e7ed;
-  
+
   p {
     color: #909399;
     font-size: 12px;
@@ -189,7 +191,7 @@ async function handleLogin() {
   .login-box {
     padding: 30px 20px;
   }
-  
+
   .login-header h1 {
     font-size: 24px;
   }
