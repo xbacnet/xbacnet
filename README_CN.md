@@ -93,13 +93,88 @@ sudo systemctl start xbacnet-server.service
 * 如何使用
 在数据库中的添加对象，编辑对象属性，把要发布的数据写入present_value
 
-## 开发计划
+## Web管理界面
 
-1. 增加日志
-2. 自动重加载对象列表
-3. 增加异常处理
-4. 增加API
-5. 增加Web界面
+xBACnet现在包含一个现代化的基于Web的管理界面，用于轻松配置和监控BACnet对象。
+
+### 功能特性
+
+#### 🔐 用户认证
+- 安全的登录系统，支持基于角色的访问控制
+- 默认凭据：`administrator` / `!BACnetPro1`
+
+![登录页面](images/login.png)
+
+#### 📊 仪表板
+- 系统概览和实时统计信息
+- 显示对象分布情况的交互式图表
+- 系统状态监控
+- 最近活动日志
+
+![仪表板](images/dashboard.png)
+
+#### 🏗️ BACnet对象管理
+支持所有BACnet对象类型的完整CRUD操作：
+
+**模拟对象**
+- **模拟输入**：监控传感器的模拟输入值
+- **模拟输出**：控制模拟输出设备
+- **模拟值**：存储和管理模拟值
+
+![模拟输入](images/analog-inputs.png)
+![模拟输出](images/analog-outputs.png)
+![模拟值](images/analog-values.png)
+
+**二进制对象**
+- **二进制输入**：监控二进制输入状态（开/关）
+- **二进制输出**：控制二进制输出设备
+- **二进制值**：存储和管理二进制值
+
+![二进制输入](images/binary-inputs.png)
+![二进制输出](images/binary-outputs.png)
+![二进制值](images/binary-values.png)
+
+**多状态对象**
+- **多状态输入**：监控多状态输入设备
+- **多状态输出**：控制多状态输出设备
+- **多状态值**：存储和管理多状态值
+
+![多状态输入](images/multi-state-inputs.png)
+![多状态输出](images/multi-state-outputs.png)
+![多状态值](images/multi-state-values.png)
+
+#### 👥 用户管理
+- 创建、编辑和删除用户账户
+- 基于角色的权限管理
+- 用户活动跟踪
+
+![用户管理](images/user-management.png)
+
+### 快速开始
+
+1. **启动API服务器**
+   ```bash
+   cd xbacnet-api
+   python run.py --port 8000
+   ```
+
+2. **启动Web界面**
+   ```bash
+   cd xbacnet-web
+   npm install
+   npm run dev
+   ```
+
+3. **访问界面**
+   - 打开浏览器访问 `http://localhost:3000`
+   - 使用 `administrator` / `!BACnetPro1` 登录
+
+### 技术栈
+- **前端**：Vue 3 + Element Plus + ECharts
+- **后端**：Python Falcon REST API
+- **数据库**：MySQL
+- **认证**：基于JWT的安全认证
+
 
 ## 微信群
 

@@ -1,7 +1,7 @@
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">xBACnet v1.0.0</h1>
 <h4 align="center">Publicar qualquer dado como BACnet</h4>
 
-[简体中文](./README_CN.md) | [English](./README.md) | Français | Español | Русский | Português
+[简体中文](./README_CN.md) | [English](./README.md) | [Français](./README_FR.md) | [Español](./README_ES.md) | [Русский](./README_RU.md) | [Português](./README_PT.md) | [हिन्दी](./README_HI.md) | [Bahasa Indonesia](./README_ID.md) | [Bahasa Melayu](./README_MS.md) | [Tiếng Việt](./README_VI.md) | [Türkçe](./README_TR.md) | [العربية](./README_AR.md)
 
 ## Introdução xBACnet
 
@@ -90,16 +90,90 @@ sudo systemctl enable xbacnet-server.service
 sudo systemctl start xbacnet-server.service
 ```
 
-* Como usar
+## Como usar
 Adicionar objetos no banco de dados, editar propriedades dos objetos, escrever os dados a serem publicados em present_value
 
-## Plano de desenvolvimento
+## Interface de Gerenciamento Web
 
-1. Adicionar logs
-2. Recarregamento automático da lista de objetos
-3. Adicionar tratamento de exceções
-4. Adicionar API
-5. Adicionar interface web
+xBACnet agora inclui uma interface de gerenciamento web moderna para facilitar a configuração e monitoramento de objetos BACnet.
+
+### Recursos
+
+#### 🔐 Autenticação de Usuário
+- Sistema de login seguro com controle de acesso baseado em funções
+- Credenciais padrão: `administrator` / `!BACnetPro1`
+
+![Página de Login](images/login.png)
+
+#### 📊 Painel de Controle
+- Visão geral do sistema com estatísticas em tempo real
+- Gráficos interativos mostrando distribuição de objetos
+- Monitoramento do status do sistema
+- Logs de atividade recente
+
+![Painel de Controle](images/dashboard.png)
+
+#### 🏗️ Gerenciamento de Objetos BACnet
+Operações CRUD completas para todos os tipos de objetos BACnet:
+
+**Objetos Analógicos**
+- **Entradas Analógicas**: Monitorar valores de entrada analógica de sensores
+- **Saídas Analógicas**: Controlar dispositivos de saída analógica
+- **Valores Analógicos**: Armazenar e gerenciar valores analógicos
+
+![Entradas Analógicas](images/analog-inputs.png)
+![Saídas Analógicas](images/analog-outputs.png)
+![Valores Analógicos](images/analog-values.png)
+
+**Objetos Binários**
+- **Entradas Binárias**: Monitorar estados de entrada binária (ligado/desligado)
+- **Saídas Binárias**: Controlar dispositivos de saída binária
+- **Valores Binários**: Armazenar e gerenciar valores binários
+
+![Entradas Binárias](images/binary-inputs.png)
+![Saídas Binárias](images/binary-outputs.png)
+![Valores Binários](images/binary-values.png)
+
+**Objetos Multi-estado**
+- **Entradas Multi-estado**: Monitorar dispositivos de entrada multi-estado
+- **Saídas Multi-estado**: Controlar dispositivos de saída multi-estado
+- **Valores Multi-estado**: Armazenar e gerenciar valores multi-estado
+
+![Entradas Multi-estado](images/multi-state-inputs.png)
+![Saídas Multi-estado](images/multi-state-outputs.png)
+![Valores Multi-estado](images/multi-state-values.png)
+
+#### 👥 Gerenciamento de Usuários
+- Criar, editar e excluir contas de usuário
+- Permissões baseadas em funções
+- Rastreamento de atividade do usuário
+
+![Gerenciamento de Usuários](images/user-management.png)
+
+### Início Rápido
+
+1. **Iniciar o Servidor API**
+   ```bash
+   cd xbacnet-api
+   python run.py --port 8000
+   ```
+
+2. **Iniciar a Interface Web**
+   ```bash
+   cd xbacnet-web
+   npm install
+   npm run dev
+   ```
+
+3. **Acessar a Interface**
+   - Abrir navegador em `http://localhost:3000`
+   - Fazer login com: `administrator` / `!BACnetPro1`
+
+### Stack Tecnológico
+- **Frontend**: Vue 3 + Element Plus + ECharts
+- **Backend**: Python Falcon REST API
+- **Banco de Dados**: MySQL
+- **Autenticação**: Segurança baseada em JWT
 
 ## Grupo WeChat
 

@@ -2,22 +2,22 @@
   <div class="analog-inputs">
     <!-- Page Header -->
     <div class="page-header">
-      <h1>Analog Input Objects</h1>
-      <p>Manage analog input objects in the BACnet system</p>
+      <h1>Multi-state Output Objects</h1>
+      <p>Manage multi-state output objects in the BACnet system</p>
     </div>
-    
+
     <!-- Action Buttons -->
     <div class="action-buttons">
       <el-button type="primary" @click="showCreateDialog">
         <el-icon><Plus /></el-icon>
-        Create Analog Input
+        Create Multi-state Output
       </el-button>
       <el-button @click="loadData">
         <el-icon><Refresh /></el-icon>
         Refresh
       </el-button>
     </div>
-    
+
     <!-- Data Table -->
     <el-card class="data-table">
       <el-table
@@ -64,7 +64,7 @@
           </template>
         </el-table-column>
       </el-table>
-      
+
       <!-- Pagination -->
       <div class="pagination">
         <el-pagination
@@ -78,7 +78,7 @@
         />
       </div>
     </el-card>
-    
+
     <!-- Create/Edit Dialog -->
     <el-dialog
       v-model="dialogVisible"
@@ -100,11 +100,11 @@
             style="width: 100%"
           />
         </el-form-item>
-        
+
         <el-form-item label="Object Name" prop="object_name">
           <el-input v-model="formData.object_name" />
         </el-form-item>
-        
+
         <el-form-item label="Present Value" prop="present_value">
           <el-input-number
             v-model="formData.present_value"
@@ -112,15 +112,15 @@
             style="width: 100%"
           />
         </el-form-item>
-        
+
         <el-form-item label="Description">
           <el-input v-model="formData.description" type="textarea" />
         </el-form-item>
-        
+
         <el-form-item label="Status Flags" prop="status_flags">
           <el-input v-model="formData.status_flags" maxlength="4" />
         </el-form-item>
-        
+
         <el-form-item label="Event State" prop="event_state">
           <el-select v-model="formData.event_state" style="width: 100%">
             <el-option label="Normal" value="normal" />
@@ -130,15 +130,15 @@
             <el-option label="Low Limit" value="lowLimit" />
           </el-select>
         </el-form-item>
-        
+
         <el-form-item label="Out of Service" prop="out_of_service">
           <el-switch v-model="formData.out_of_service" />
         </el-form-item>
-        
+
         <el-form-item label="Units" prop="units">
           <el-input v-model="formData.units" />
         </el-form-item>
-        
+
         <el-form-item label="COV Increment">
           <el-input-number
             v-model="formData.cov_increment"
@@ -148,7 +148,7 @@
           />
         </el-form-item>
       </el-form>
-      
+
       <template #footer>
         <el-button @click="dialogVisible = false">Cancel</el-button>
         <el-button type="primary" @click="submitForm" :loading="submitting">
@@ -216,7 +216,7 @@ const formRules = {
 
 // Computed
 const dialogTitle = computed(() => {
-  return isEdit.value ? 'Edit Analog Input' : 'Create Analog Input'
+  return isEdit.value ? 'Edit Multi-state Output' : 'Create Multi-state Output'
 })
 
 // Methods
@@ -227,7 +227,7 @@ async function loadData() {
       page: currentPage.value,
       page_size: pageSize.value
     })
-    
+
     tableData.value = response.data
     total.value = response.pagination.total
   } catch (error) {
@@ -261,7 +261,7 @@ async function deleteObject(row) {
         type: 'warning'
       }
     )
-    
+
     await apiService.deleteAnalogInput(row.id)
     ElMessage.success('Analog input deleted successfully')
     loadData()
@@ -275,13 +275,13 @@ async function deleteObject(row) {
 
 async function submitForm() {
   if (!formRef.value) return
-  
+
   try {
     const valid = await formRef.value.validate()
     if (!valid) return
-    
+
     submitting.value = true
-    
+
     if (isEdit.value) {
       await apiService.updateAnalogInput(formData.id, formData)
       ElMessage.success('Analog input updated successfully')
@@ -289,7 +289,7 @@ async function submitForm() {
       await apiService.createAnalogInput(formData)
       ElMessage.success('Analog input created successfully')
     }
-    
+
     dialogVisible.value = false
     loadData()
   } catch (error) {
@@ -304,7 +304,7 @@ function resetForm() {
   if (formRef.value) {
     formRef.value.resetFields()
   }
-  
+
   Object.assign(formData, {
     object_identifier: null,
     object_name: '',
@@ -350,30 +350,30 @@ onMounted(() => {
 .analog-inputs {
   .page-header {
     margin-bottom: 20px;
-    
+
     h1 {
       color: var(--text-primary);
       font-size: 24px;
       font-weight: 600;
       margin-bottom: 5px;
     }
-    
+
     p {
       color: var(--text-secondary);
       font-size: 14px;
     }
   }
-  
+
   .action-buttons {
     margin-bottom: 20px;
   }
-  
+
   .data-table {
     .value-display {
       font-weight: 500;
       color: var(--primary-color);
     }
-    
+
     .pagination {
       margin-top: 20px;
       display: flex;
